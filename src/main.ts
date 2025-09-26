@@ -7,6 +7,8 @@ import type { Piece, HexCoord } from './models/Piece';
 // import type { Player } from "./models/Piece";
 
 // Get the app container
+const app = document.getElementById('app');
+
 const app = document.getElementById('app')!;
 app.innerHTML = `
   <div id="game-container" style="display:flex; gap: 20px;">
