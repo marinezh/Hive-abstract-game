@@ -1,8 +1,5 @@
 # Hive-abstract-game
 the game Hive, designed by John Yianni
-
-# Hive-abstract-game
-the game Hive, designed by John Yianni
 # Hive Game Rules
 
 ## Game Setup and Basic Play
