@@ -2,18 +2,19 @@
 import './style.css';
 import { Game } from './game/Game';
 import { QueenBee } from './models/QueenBee';
-import { Board } from './models/Board';
-import type { Piece, Player, HexCoord } from './models/Piece';
+// import { Board } from './models/Board';
+import type { Piece, HexCoord } from './models/Piece';
+// import type { Player } from "./models/Piece";
 
 // Get the app container
-// const app = document.getElementById('app');
+const app = document.getElementById('app');
 
-// if (app) {
-//   app.innerHTML = `
-//     <h1>Hive Game</h1>
-//     <div id="board" class="board"></div>
-//   `;
-// }
+if (app) {
+  app.innerHTML = `
+    <h1>Hive Game</h1>
+    <div id="board" class="board"></div>
+  `;
+}
 
 const game = new Game();
 

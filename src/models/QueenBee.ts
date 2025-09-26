@@ -1,5 +1,6 @@
 import { Piece } from "./Piece";
-import { Board, HexCoord } from "./Board"; 
+import type { HexCoord } from "./Piece";
+import type { Board } from "./Board";
 
 export class QueenBee extends Piece {
   legalMoves(board: Board): HexCoord[] {

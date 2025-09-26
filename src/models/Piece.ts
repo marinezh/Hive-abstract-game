@@ -1,3 +1,4 @@
+import type { Board } from "./Board";
 
 export type HexCoord = { q: number; r: number };
 export type Player = "White" | "Black";
@@ -14,5 +15,3 @@ export abstract class Piece {
   /** Return all legal target coordinates from current position */
   abstract legalMoves(board: Board): HexCoord[];
 }
-
-import type { Board } from "./Board";
