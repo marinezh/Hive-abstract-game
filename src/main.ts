@@ -7,14 +7,14 @@ import type { Piece, HexCoord } from './models/Piece';
 // import type { Player } from "./models/Piece";
 
 // Get the app container
-const app = document.getElementById('app');
-
-if (app) {
-  app.innerHTML = `
-    <h1>Hive Game</h1>
+const app = document.getElementById('app')!;
+app.innerHTML = `
+  <div id="game-container" style="display:flex; gap: 20px;">
+    <div id="white-bank" class="piece-bank"></div>
     <div id="board" class="board"></div>
-  `;
-}
+    <div id="black-bank" class="piece-bank"></div>
+  </div>
+`;
 
 const game = new Game();
 
