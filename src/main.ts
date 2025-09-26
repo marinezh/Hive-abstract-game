@@ -1,33 +1,46 @@
 // main.ts
 import './style.css';
+import { Game } from './game/Game';
+import { QueenBee } from './models/QueenBee';
+import { Board } from './models/Board';
+import type { Piece, Player, HexCoord } from './models/Piece';
 
 // Get the app container
-const app = document.getElementById('app');
+// const app = document.getElementById('app');
 
-if (app) {
-  app.innerHTML = `
-    <h1>Hive Game</h1>
-    <div id="board" class="board"></div>
-  `;
+// if (app) {
+//   app.innerHTML = `
+//     <h1>Hive Game</h1>
+//     <div id="board" class="board"></div>
+//   `;
+// }
+
+const game = new Game();
+
+// Example: add a white QueenBee at center (0,0)
+const center: HexCoord = { q: 0, r: 0 };
+const queen = new QueenBee('White', center);
+game.board.addPiece(queen);
+
+function renderBoard() {
+  const boardDiv = document.getElementById('board')!;
+  boardDiv.innerHTML = ''; // clear previous render
+
+game.board.pieces.forEach((piece: Piece) => {
+  const el = document.createElement('div');
+  el.className = `hex-cell ${piece.owner.toLowerCase()}`;
+  el.textContent = piece.constructor.name;
+  boardDiv.appendChild(el);
+});
 }
 
-// Optional: simple function to create a hex cell (for later)
-function createHexCell(id: string) {
-  const cell = document.createElement('div');
-  cell.className = 'hex-cell';
-  cell.id = id;
-  return cell;
-}
+renderBoard();
 
-// Example: create a 3x3 placeholder grid
-const board = document.getElementById('board');
-if (board) {
-  for (let i = 0; i < 3; i++) {
-    const row = document.createElement('div');
-    row.className = 'hex-row';
-    for (let j = 0; j < 3; j++) {
-      row.appendChild(createHexCell(`cell-${i}-${j}`));
-    }
-    board.appendChild(row);
-  }
-}
+const board = document.getElementById('board'); // DOM element
+
+board?.addEventListener('click', (e) => {
+  const target = e.target as HTMLElement;
+  console.log('Clicked cell:', target.id);
+  // TODO: move piece logic here
+});
+
