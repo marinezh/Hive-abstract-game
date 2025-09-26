@@ -25,9 +25,11 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  justify-content: center;
+  align-items: flex-start;
   min-width: 320px;
   min-height: 100vh;
+  background-color: #242424; /* your dark theme */
 }
 
 h1 {
@@ -98,7 +100,9 @@ button:focus-visible {
 .board {
   display: flex;
   flex-direction: column;
-  gap: 5px;
+  align-items: center;
+  gap: 5px; /* space between rows */
+  margin-top: 50px;
 }
 
 .hex-row {
@@ -106,13 +110,73 @@ button:focus-visible {
   gap: 5px;
 }
 
+.hex-row:nth-child(even) {
+  margin-left: 30px; /* offset every other row */
+}
+
 .hex-cell {
+  width: 60px;
+  height: 60px;
+  background-color: #f0e68c;
+  clip-path: polygon(
+    25% 6.7%,
+    75% 6.7%,
+    100% 50%,
+    75% 93.3%,
+    25% 93.3%,
+    0% 50%
+  );
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  color: #333;
+  cursor: pointer;
+}
+
+/* Container holding everything: banks + board */
+#game-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px;
+}
+
+/* Vertical columns for pieces */
+.piece-bank {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: center;
+}
+
+/* Optional label above piece bank */
+.piece-bank-label {
+  font-weight: bold;
+  margin-bottom: 5px;
+  color: inherit;
+}
+
+/* Piece images inside bank or on board */
+.piece-bank img,
+.hex-cell img {
   width: 50px;
   height: 50px;
-  background-color: #eee;
-  border: 1px solid #333;
-  clip-path: polygon(
-    25% 0%, 75% 0%, 100% 50%,
-    75% 100%, 25% 100%, 0% 50%
-  );
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Hover effect for hex cells */
+.hex-cell:hover {
+  background-color: #e0d678;
+}
+
+#app {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
