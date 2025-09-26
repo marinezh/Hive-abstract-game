@@ -1,7 +1,7 @@
-// main.ts
 import './style.css';
 import { Game } from './game/Game';
 import { QueenBee } from './models/QueenBee';
+import { CanvasRenderer } from './game/CanvasRenderer';
 // import { Board } from './models/Board';
 import type { Piece, HexCoord } from './models/Piece';
 // import type { Player } from "./models/Piece";
@@ -24,6 +24,14 @@ app.innerHTML = `
 
 const game = new Game();
 
+// Get canvas and initialize renderer
+const canvas = document.getElementById('hive-canvas') as HTMLCanvasElement;
+console.log('Canvas element:', canvas);
+if (!canvas) {
+  throw new Error('Canvas element with id "hive-canvas" not found!');
+}
+const renderer = new CanvasRenderer(canvas);
+
 // Example: add a white QueenBee at center (0,0)
 // Example: place a white QueenBee in center (0,0)
 const center: HexCoord = { q: 0, r: 0 };
@@ -38,7 +46,7 @@ function renderPieceBank(player: "White" | "Black") {
        .filter(el => !el.classList.contains("piece-bank-label"))
        .forEach(el => el.remove());
 
-  const pieceTypes = ["queenbee", "beetle", "spider", "grasshopper", "soldier"];
+  const pieceTypes = ["bee", "beetle", "spider", "hopper", "ant"];
 
   for (let i = 0; i < 11; i++) {
     const type = pieceTypes[i % pieceTypes.length];
@@ -53,38 +61,16 @@ function renderPieceBank(player: "White" | "Black") {
 renderPieceBank("White");
 renderPieceBank("Black");
 
-// ----- Render board -----
-function renderBoard() {
-  const boardDiv = document.getElementById('board')!;
-  boardDiv.innerHTML = '';
 
-  const size = 5; // placeholder 5x5 grid
-  for (let r = -2; r <= 2; r++) {
-    const row = document.createElement('div');
-    row.className = 'hex-row';
 
-    for (let q = -2; q <= 2; q++) {
-      const cell = document.createElement('div');
-      cell.className = 'hex-cell';
-      cell.id = `cell-${q}-${r}`;
 
-      // Place piece image if a piece exists here
-      const piece = game.board.pieces.find(p => p.position.q === q && p.position.r === r);
-      if (piece) {
-        const img = document.createElement('img');
-        img.src = `./src/assets/${piece.constructor.name.toLowerCase()}_${piece.owner.toLowerCase()}.png`;
-        img.alt = piece.constructor.name;
-        cell.appendChild(img);
-      }
-
-      row.appendChild(cell);
-    }
-
-    boardDiv.appendChild(row);
-  }
+// Render board on canvas
+function renderCanvasBoard() {
+  renderer.clear();
+  renderer.drawBoard(game.board);
 }
 
-renderBoard();
+renderCanvasBoard();
 
 // ----- Click handler for board cells -----
 const boardEl = document.getElementById('board')!;
