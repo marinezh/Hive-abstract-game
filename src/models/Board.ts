@@ -4,7 +4,10 @@ export class Board {
   pieces: Piece[] = [];
 
   // Add piece to board
-  addPiece(piece: Piece) {
+  addPiece(piece: Piece, coord: HexCoord): void {
+    // update the piece’s internal position first
+    piece.position = coord;
+    // then store it on the board
     this.pieces.push(piece);
   }
 
