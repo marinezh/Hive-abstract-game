@@ -17,48 +17,6 @@ export class CanvasRenderer {
 	this.height = canvas.height;
   }
 
-  drawPieceBank(whiteBank: string[], blackBank: string[], selectedIndex: number | null = null, selectedColor: 'White' | 'Black' | null = null) {
-	// Draw white pieces bank (top)
-	const startX = 60;
-	const startY = 60;
-	for (let i = 0; i < whiteBank.length; i++) {
-	  const x = startX + i * 60;
-	  const y = startY;
-	  this.ctx.beginPath();
-	  this.ctx.arc(x, y, 25, 0, 2 * Math.PI);
-	  this.ctx.fillStyle = 'white';
-	  this.ctx.fill();
-	  this.ctx.strokeStyle = selectedIndex === i && selectedColor === 'White' ? '#00f' : '#333';
-	  this.ctx.lineWidth = 3;
-	  this.ctx.stroke();
-	  this.ctx.lineWidth = 1;
-	  this.ctx.fillStyle = '#333';
-	  this.ctx.font = '16px sans-serif';
-	  this.ctx.textAlign = 'center';
-	  this.ctx.textBaseline = 'middle';
-	  this.ctx.fillText(whiteBank[i][0].toUpperCase(), x, y);
-	}
-
-	// Draw black pieces bank (bottom)
-	const bankY = this.height - 60;
-	for (let i = 0; i < blackBank.length; i++) {
-	  const x = startX + i * 60;
-	  const y = bankY;
-	  this.ctx.beginPath();
-	  this.ctx.arc(x, y, 25, 0, 2 * Math.PI);
-	  this.ctx.fillStyle = 'black';
-	  this.ctx.fill();
-	  this.ctx.strokeStyle = selectedIndex === i && selectedColor === 'Black' ? '#00f' : '#333';
-	  this.ctx.lineWidth = 3;
-	  this.ctx.stroke();
-	  this.ctx.lineWidth = 1;
-	  this.ctx.fillStyle = '#fff';
-	  this.ctx.font = '16px sans-serif';
-	  this.ctx.textAlign = 'center';
-	  this.ctx.textBaseline = 'middle';
-	  this.ctx.fillText(blackBank[i][0].toUpperCase(), x, y);
-	}
-  }
 
   clear() {
 	this.ctx.clearRect(0, 0, this.width, this.height);
@@ -66,8 +24,8 @@ export class CanvasRenderer {
 
   drawBoard(board: Board) {
   // Custom grid: 4x4, pointy-topped hexes, centered in canvas
-  const size = 50;
-  const radius = 3;
+  const size = 30;
+  const radius = 6;
   const centerX = this.width / 2;
   const centerY = this.height / 2;
 	for (let q = -radius; q <= radius; q++) {
@@ -102,7 +60,7 @@ export class CanvasRenderer {
 
 drawPiece(piece: Piece) {
   const { x, y } = this.hexToPixel(piece.position.q, piece.position.r);
-  const size = 47; // same as radius for circle
+  const size = 30; // same as radius for circle
   this.ctx.beginPath();
   for (let i = 0; i < 6; i++) {
 	const angle = Math.PI / 3 * i + Math.PI / 6;
