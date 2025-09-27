@@ -5,7 +5,7 @@
 
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
-  background-color: #242424;
+  background-color: #b3a2a2;
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -29,7 +29,7 @@ body {
   align-items: flex-start;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #242424; /* your dark theme */
+  background-color: #000000fd; /* your dark theme */
 }
 
 h1 {

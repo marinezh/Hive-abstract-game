@@ -26,8 +26,11 @@ export class CanvasRenderer {
   // Custom grid: 4x4, pointy-topped hexes, centered in canvas
   const size = 30;
   const radius = 6;
-  const centerX = this.width / 2;
-  const centerY = this.height / 2;
+//   const centerX = this.width / 2;
+//   const centerY = this.height / 2;
+	const dpr = window.devicePixelRatio || 1;
+	const centerX = this.width / dpr / 2;
+	const centerY = this.height / dpr / 2;
 	for (let q = -radius; q <= radius; q++) {
 	  for (let r = -radius; r <= radius; r++) {
 		if (Math.abs(q + r) <= radius) {
@@ -86,4 +89,3 @@ drawPiece(piece: Piece) {
 	return { x, y };
   }
 }
-
