@@ -2,6 +2,19 @@
 import { Board } from '../models/Board';
 import { Piece } from '../models/Piece';
 
+// 🔹 Global cache for piece images
+const pieceImages: Record<string, HTMLImageElement> = {};
+
+function loadPieceImage(type: string, color: string): HTMLImageElement {
+  const key = `${type}_${color}`;
+  if (!pieceImages[key]) {
+    const img = new Image();
+    img.src = `./src/assets/${type}_${color.toLowerCase()}.png`;
+    pieceImages[key] = img;
+  }
+  return pieceImages[key];
+}
+
 export class CanvasRenderer {
   public ctx: CanvasRenderingContext2D;
   private width: number;
@@ -16,11 +29,15 @@ export class CanvasRenderer {
   }
 
   clear() {
-    this.ctx.clearRect(0, 0, this.width, this.height);
+    this.ctx.save();
+    this.ctx.setTransform(1, 0, 0, 1, 0, 0);
+    this.ctx.fillStyle = '#000000';
+    this.ctx.fillRect(0, 0, this.width, this.height);
+    this.ctx.restore();
   }
 
   // Convert axial (q,r) → pixel (x,y)
-  private hexToPixel(q: number, r: number) {
+  public hexToPixel(q: number, r: number) {
     const dpr = window.devicePixelRatio || 1;
     const centerX = this.width / dpr / 2;
     const centerY = this.height / dpr / 2;
@@ -29,56 +46,56 @@ export class CanvasRenderer {
     return { x, y };
   }
 
-  drawBoard(board: Board) {
+  drawBoard(board: Board, hoveredHex?: { q: number; r: number } | null) {
     const radius = 6;
-    // Draw background hex grid
     for (let q = -radius; q <= radius; q++) {
       for (let r = -radius; r <= radius; r++) {
         if (Math.abs(q + r) <= radius) {
           const { x, y } = this.hexToPixel(q, r);
-          this.drawHexCustom(x, y, this.size);
+          if (hoveredHex && hoveredHex.q === q && hoveredHex.r === r) {
+            this.drawHexCustom(x, y, this.size, '#ffe066');
+          } else {
+            this.drawHexCustom(x, y, this.size);
+          }
         }
       }
     }
     // Draw all pieces
-    board.pieces.forEach(piece => {
-      this.drawPiece(piece);
-    });
+    board.pieces.forEach(piece => this.drawPiece(piece));
   }
 
-  drawHexCustom(x: number, y: number, size: number) {
+  drawHexCustom(x: number, y: number, size: number, fill: string = '#ddd') {
     this.ctx.beginPath();
     for (let i = 0; i < 6; i++) {
-      const angle = Math.PI / 3 * i + Math.PI / 6; // pointy-topped
+      const angle = Math.PI / 3 * i + Math.PI / 6;
       const px = x + size * Math.cos(angle);
       const py = y + size * Math.sin(angle);
       if (i === 0) this.ctx.moveTo(px, py);
       else this.ctx.lineTo(px, py);
     }
     this.ctx.closePath();
-    this.ctx.strokeStyle = "#333";
+    this.ctx.strokeStyle = '#333';
     this.ctx.stroke();
-    this.ctx.fillStyle = "#ddd";
+    this.ctx.fillStyle = fill;
     this.ctx.fill();
   }
 
-drawPiece(piece: Piece) {
-  const { q, r } = piece.position;  // 🔹 use .position
-  const { x, y } = this.hexToPixel(q, r);
-  const size = this.size;
+  drawPiece(piece: Piece) {
+    const { q, r } = piece.position;
+    const { x, y } = this.hexToPixel(q, r);
+    const size = this.size;
 
-  // 🔹 figure out type from constructor name
-  let typeKey = piece.constructor.name.toLowerCase(); // e.g. "queenbee", "spider"
+    // normalize typeKey
+    let typeKey = piece.constructor.name.toLowerCase();
+    if (typeKey.includes("queen")) typeKey = "bee";
+    else if (typeKey.includes("beetle")) typeKey = "beetle";
+    else if (typeKey.includes("spider")) typeKey = "spider";
+    else if (typeKey.includes("grass")) typeKey = "hopper";
+    else if (typeKey.includes("ant")) typeKey = "ant";
 
-  if (typeKey.includes("queen")) typeKey = "bee";
-  else if (typeKey.includes("beetle")) typeKey = "beetle";
-  else if (typeKey.includes("spider")) typeKey = "spider";
-  else if (typeKey.includes("grass")) typeKey = "hopper";
-  else if (typeKey.includes("ant")) typeKey = "ant";
+    // 🔹 load from cache
+    const img = loadPieceImage(typeKey, piece.owner);
 
-  const img = new Image();
-  img.src = `./src/assets/${typeKey}_${piece.owner.toLowerCase()}.png`; // 🔹 use .owner
-  img.onload = () => {
     this.ctx.drawImage(
       img,
       x - size * 0.9,
@@ -86,6 +103,5 @@ drawPiece(piece: Piece) {
       size * 1.8,
       size * 1.8
     );
-  };
-}
+  }
 }
