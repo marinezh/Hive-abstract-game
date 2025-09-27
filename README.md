@@ -56,4 +56,6 @@ On each subsequent turn, you may either:
   - Moves **one space at a time**.  
   - Can climb on top of other pieces (including stacks).  
 
+## Quantity
+- one bee, two spiders, 2 beetles, 3 grasshopper, 3 solder ants
 ---

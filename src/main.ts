@@ -22,62 +22,62 @@ app.innerHTML = `
   </div>
 `;
 
+const canvas = document.getElementById('hive-canvas') as HTMLCanvasElement;
+
+// High-DPI setup
+const dpr = window.devicePixelRatio || 1;
+canvas.width = 1400 * dpr;
+canvas.height = 800 * dpr;
+canvas.style.width = "1400px";
+canvas.style.height = "800px";
+
+// When calculating positions:
+// const boardWidth = canvas.width / dpr;
+// const boardHeight = canvas.height / dpr;
+
+// Create renderer and scale context
+const renderer = new CanvasRenderer(canvas);
+renderer.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
 const game = new Game();
 
-// Get canvas and initialize renderer
-const canvas = document.getElementById('hive-canvas') as HTMLCanvasElement;
-console.log('Canvas element:', canvas);
-if (!canvas) {
-  throw new Error('Canvas element with id "hive-canvas" not found!');
-}
-const renderer = new CanvasRenderer(canvas);
-
 // Example: add a white QueenBee at center (0,0)
-// Example: place a white QueenBee in center (0,0)
 const center: HexCoord = { q: 0, r: 0 };
 const queen = new QueenBee('White', center);
-game.board.addPiece(queen);
+game.board.addPiece(queen,{ q: 0, r: 0 });
 
-// ----- Render piece banks -----
-function renderPieceBank(player: "White" | "Black") {
-  const bank = document.getElementById(player.toLowerCase() + "-bank")!;
-  // clear previous pieces except the label
-  Array.from(bank.children)
-       .filter(el => !el.classList.contains("piece-bank-label"))
-       .forEach(el => el.remove());
 
-  const pieceTypes = ["bee", "beetle", "spider", "hopper", "ant"];
+const pieceBankConfig = [
+  { type: "bee", count: 1 },
+  { type: "spider", count: 2 },
+  { type: "beetle", count: 2 },
+  { type: "hopper", count: 3 }, // grasshopper
+  { type: "ant", count: 3 },    // soldier ant
+];
+const pieceSize = 50;
 
-  for (let i = 0; i < 11; i++) {
-    const type = pieceTypes[i % pieceTypes.length];
-    const img = document.createElement("img");
-    img.src = `./src/assets/${type}_${player.toLowerCase()}.png`;
-    img.alt = type;
-    img.draggable = true; // for future drag-drop
-    bank.appendChild(img);
-  }
+function drawPieceBankOnCanvas(player: "White" | "Black") {
+  let y = 60;
+  pieceBankConfig.forEach(({ type, count }) => {
+    for (let i = 0; i < count; i++) {
+      const img = new Image();
+      img.src = `./src/assets/${type}_${player.toLowerCase()}.png`;
+      const drawY = y; // capture current y value
+      img.onload = () => {
+        const x = player === "Black" ? 20 : canvas.width / dpr - pieceSize - 20;
+        renderer.ctx.drawImage(img, x, drawY, pieceSize, pieceSize);
+      };
+      y += pieceSize + 10;
+    }
+  });
 }
 
-renderPieceBank("White");
-renderPieceBank("Black");
 
-
-
-
-// Render board on canvas
 function renderCanvasBoard() {
   renderer.clear();
   renderer.drawBoard(game.board);
+  drawPieceBankOnCanvas("Black");
+  drawPieceBankOnCanvas("White");
 }
 
 renderCanvasBoard();
-
-// ----- Click handler for board cells -----
-const boardEl = document.getElementById('board')!;
-boardEl.addEventListener('click', (e) => {
-  const target = e.target as HTMLElement;
-  const cell = target.closest('.hex-cell') as HTMLElement;
-  if (!cell) return;
-  console.log('Clicked cell:', cell.id);
-  // TODO: move piece logic
-});

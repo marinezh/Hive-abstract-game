@@ -7,7 +7,7 @@ import { Board } from '../models/Board';
 import { Piece } from '../models/Piece';
 
 export class CanvasRenderer {
-  private ctx: CanvasRenderingContext2D;
+	public ctx: CanvasRenderingContext2D;
   private width: number;
   private height: number;
 
@@ -26,8 +26,11 @@ export class CanvasRenderer {
   // Custom grid: 4x4, pointy-topped hexes, centered in canvas
   const size = 30;
   const radius = 6;
-  const centerX = this.width / 2;
-  const centerY = this.height / 2;
+//   const centerX = this.width / 2;
+//   const centerY = this.height / 2;
+	const dpr = window.devicePixelRatio || 1;
+	const centerX = this.width / dpr / 2;
+	const centerY = this.height / dpr / 2;
 	for (let q = -radius; q <= radius; q++) {
 	  for (let r = -radius; r <= radius; r++) {
 		if (Math.abs(q + r) <= radius) {
@@ -81,9 +84,11 @@ drawPiece(piece: Piece) {
   // Simple axial hex to pixel conversion
   hexToPixel(q: number, r: number) {
 	const size = 40; // hex size
-	const x = this.width / 2 + size * Math.sqrt(3) * (q + r/2);
-	const y = this.height / 2 + size * 3/2 * r;
+	const dpr = window.devicePixelRatio || 1;
+	const centerX = this.width / dpr / 2;
+	const centerY = this.height / dpr / 2;
+	const x = centerX + size * Math.sqrt(3) * (q + r/2);
+	const y = centerY + size * 3/2 * r;
 	return { x, y };
   }
 }
-
