@@ -202,7 +202,7 @@ button:focus-visible {
 .hex-cell {
   width: 60px;
   height: 60px;
-  background-color: #d9d9d9; /* light grey template */
+  background-color: #e7e7e7; /* light grey template */
   clip-path: polygon(
     25% 6.7%,
     75% 6.7%,
@@ -215,4 +215,24 @@ button:focus-visible {
   align-items: center;
   justify-content: center;
   border: 1px solid #aaa;
+}
+
+#hive-canvas {
+  display: block;
+  margin: 0 auto;   /* center horizontally */
+  margin-bottom: 50px;
+}
+
+
+.center-container {
+  display: flex;
+  justify-content: center;   /* horizontal center */
+  align-items: center;       /* vertical center */
+  margin-top: 50px;
+}
+
+h1 {
+  color: #ffe066;
+  font-size: 3rem;
+  margin-bottom: 50px;
 }
