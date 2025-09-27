@@ -22,20 +22,18 @@ app.innerHTML = `
   </div>
 `;
 
-
-
 const canvas = document.getElementById('hive-canvas') as HTMLCanvasElement;
 
 // High-DPI setup
 const dpr = window.devicePixelRatio || 1;
 canvas.width = 1400 * dpr;
-canvas.height = 700 * dpr;
+canvas.height = 800 * dpr;
 canvas.style.width = "1400px";
-canvas.style.height = "700px";
+canvas.style.height = "800px";
 
 // When calculating positions:
-const boardWidth = canvas.width / dpr;
-const boardHeight = canvas.height / dpr;
+// const boardWidth = canvas.width / dpr;
+// const boardHeight = canvas.height / dpr;
 
 // Create renderer and scale context
 const renderer = new CanvasRenderer(canvas);
@@ -46,39 +44,40 @@ const game = new Game();
 // Example: add a white QueenBee at center (0,0)
 const center: HexCoord = { q: 0, r: 0 };
 const queen = new QueenBee('White', center);
-game.board.addPiece(queen);
+game.board.addPiece(queen,{ q: 0, r: 0 });
 
-const pieceTypes = ["bee", "beetle", "spider", "hopper", "ant"];
-const pieceSize = 50; // Size of each piece image
 
-function drawPieceBanksOnCanvas() {
-  // Draw black pieces on the left
-  pieceTypes.forEach((type, i) => {
-    const img = new Image();
-    img.src = `./src/assets/${type}_black.png`;
-    img.onload = () => {
-      const x = 20;
-      const y = 60 + i * (pieceSize + 10);
-      renderer.ctx.drawImage(img, x, y, pieceSize, pieceSize);
-    };
-  });
+const pieceBankConfig = [
+  { type: "bee", count: 1 },
+  { type: "spider", count: 2 },
+  { type: "beetle", count: 2 },
+  { type: "hopper", count: 3 }, // grasshopper
+  { type: "ant", count: 3 },    // soldier ant
+];
+const pieceSize = 50;
 
-  // Draw white pieces on the right
-  pieceTypes.forEach((type, i) => {
-    const img = new Image();
-    img.src = `./src/assets/${type}_white.png`;
-    img.onload = () => {
-      const x = canvas.width / dpr - pieceSize - 20;
-      const y = 60 + i * (pieceSize + 10);
-      renderer.ctx.drawImage(img, x, y, pieceSize, pieceSize);
-    };
+function drawPieceBankOnCanvas(player: "White" | "Black") {
+  let y = 60;
+  pieceBankConfig.forEach(({ type, count }) => {
+    for (let i = 0; i < count; i++) {
+      const img = new Image();
+      img.src = `./src/assets/${type}_${player.toLowerCase()}.png`;
+      const drawY = y; // capture current y value
+      img.onload = () => {
+        const x = player === "Black" ? 20 : canvas.width / dpr - pieceSize - 20;
+        renderer.ctx.drawImage(img, x, drawY, pieceSize, pieceSize);
+      };
+      y += pieceSize + 10;
+    }
   });
 }
+
 
 function renderCanvasBoard() {
   renderer.clear();
   renderer.drawBoard(game.board);
-  drawPieceBanksOnCanvas();
+  drawPieceBankOnCanvas("Black");
+  drawPieceBankOnCanvas("White");
 }
 
 renderCanvasBoard();
