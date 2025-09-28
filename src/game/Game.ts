@@ -52,6 +52,8 @@ export class Game {
    */
   placePiece(piece: Piece, coord: { q: number; r: number }): boolean {
     // destination must be empty
+    console.log("placePiece", coord.q, coord.r);
+    if (piece.owner !== this.currentPlayer) return false;
     if (!this.board.isEmpty(coord)) return false;
 
     // require contact with hive except for very first move

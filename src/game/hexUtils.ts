@@ -15,5 +15,6 @@ export function hexRound(hex: { q: number, r: number }) {
 
   if (q_diff > r_diff && q_diff > s_diff)       q = -r - s;
   else if (r_diff > s_diff)                     r = -q - s;
+  console.log(q, r);
   return { q, r };
 }
