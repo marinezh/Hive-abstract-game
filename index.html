@@ -17,11 +17,28 @@
 			<div class="center-container">
 				<h1 class="bee-text">Hive Game</h1>
 				<div id="game-status"></div>
+
+				<!-- <button id="show-popup">Show Win Popup</button> -->
+
+				<div id="popup-overlay" class="hidden">
+					<div class="popup">
+						<span id="close-popup">&times;</span>
+						<h2 id="popup-message">White wins!</h2>
+					</div>
+				</div>
+
 			</div>
 			<!-- <div id="app"></div> -->
 			<canvas id="hive-canvas" width="1400" height="700" style="border:1px solid #ffe066; display:block; margin:auto;"></canvas>
 			<!-- <canvas id="hive-canvas" style="border:1px solid #ffe066; display:block; margin:auto;"></canvas> -->
 		</div>
+		<footer>
+			<p>
+				©2025 
+				<a href="https://github.com/MariiaZhytnikova" target="_blank">Mariia</a> & 
+				<a href="https://github.com/marinezh" target="_blank">Marina</a>
+  			</p>
+		</footer>
 	<script type="module" src="/src/main.ts"></script>
 	</body>
 </html>

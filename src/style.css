@@ -36,8 +36,9 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+
+ 
   min-width: 320px;
   min-height: 100vh;
   background-color: #000000fd; /* your dark theme */
@@ -253,4 +254,86 @@ h1 {
   color: #ffe066;
   font-size: 3rem;
   
+}
+
+/* Overlay covers the screen */
+#popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(13, 3, 27, 0.85); /* dark obsidian-like */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* Hidden by default */
+.hidden {
+  display: none !important;
+}
+
+/* Popup box */
+.popup {
+  background: #1a0f2b; /* deep dark violet */
+  color: #ffe066;      /* Hive yellow */
+  padding: 25px 35px;
+  border-radius: 16px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+  text-align: center;
+  position: relative;
+  min-width: 280px;
+  animation: popIn 0.25s ease;
+}
+
+/* Heading text */
+.popup h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: bold;
+}
+
+/* Close button (X) */
+#close-popup {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #ffe066;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+#close-popup:hover {
+  color: #ffffff; /* turn white on hover */
+}
+
+button
+{
+  margin-left: 40px;
+  background-color: #ffe066;
+}
+
+footer
+{
+  color:#e0d678;
+  align-self: center;
+  position: fixed;       /* stay visible */
+  bottom: 0;
+
+  
+}
+/* Animation */
+@keyframes popIn {
+  from {
+    transform: scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
 }
