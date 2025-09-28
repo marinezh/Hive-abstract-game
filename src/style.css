@@ -226,13 +226,19 @@ button:focus-visible {
 
 .center-container {
   display: flex;
+  flex-direction: column;
   justify-content: center;   /* horizontal center */
   align-items: center;       /* vertical center */
   margin-top: 50px;
+  margin-bottom: 20px
+}
+
+#game-status {
+  color: #ffe066;
 }
 
 h1 {
   color: #ffe066;
   font-size: 3rem;
-  margin-bottom: 50px;
+  
 }

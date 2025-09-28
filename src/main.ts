@@ -143,8 +143,9 @@ canvas.addEventListener('click', (e) => {
 	  }
 	  selected = null;
 	  renderCanvasBoard();
-
+		document.getElementById('game-status')!.textContent = `Next move: ${game.currentPlayer}`;
 		// DEBUG (check the winner)
+
 		const winner = game.checkWin();
 		if (winner) {
 		  console.log(`Winner: ${winner}`);
