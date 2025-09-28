@@ -13,6 +13,17 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+@font-face {
+  font-family: "JLR Bizzy Beez";
+  src: url("public/fonts/jlr-bizzy-beez.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
+
+.bee-text {
+  font-family: "JLR Bizzy Beez", sans-serif;
+}
+
 a {
   font-weight: 500;
   color: #646cff;
@@ -30,6 +41,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: #000000fd; /* your dark theme */
+  padding-bottom: 50px;
 }
 
 h1 {
