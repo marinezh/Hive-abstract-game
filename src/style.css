@@ -1,244 +1,406 @@
 :root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+	line-height: 1.5;
+	font-weight: 400;
+	font-synthesis: none;
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
 }
 
 @font-face {
-  font-family: "JLR Bizzy Beez";
-  src: url("public/fonts/jlr-bizzy-beez.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
+	font-family: "JLR Bizzy Beez";
+	src: url("public/fonts/jlr-bizzy-beez.ttf") format("truetype");
+	font-weight: normal;
+	font-style: normal;
 }
 
 .bee-text {
-  font-family: "JLR Bizzy Beez", sans-serif;
+	font-family: "JLR Bizzy Beez", sans-serif;
 }
 
 h1 {
-  color: #ffe066;
-  font-size: 3rem;
+	color: #ffe066;
+	font-size: 3rem;
 }
 
 a {
-  font-weight: 500;
-  color: #f0e68c;
-  text-decoration: inherit;
+	font-weight: 500;
+	color: #f0e68c;
+	text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+	color: #535bf2;
 }
 
 body {
-  margin: 0;
-  display: flex;
-  flex-direction: column;
+	margin: 0;
+	display: flex;
+	flex-direction: column;
 
  
-  min-width: 320px;
-  min-height: 100vh;
-  background-color: #000000fd; /* your dark theme */
-  padding-bottom: 50px;
+	min-width: 320px;
+	min-height: 100vh;
+	background-color: #000000fd; /* your dark theme */
+	padding-bottom: 50px;
 }
 
 .board {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px; /* space between rows */
-  margin-top: 50px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 5px; /* space between rows */
+	margin-top: 50px;
 }
 
 .hex-row {
-  display: flex;
-  gap: 5px;
+	display: flex;
+	gap: 5px;
 }
 
 .hex-row:nth-child(even) {
-  margin-left: 30px; /* offset every other row */
+	margin-left: 30px; /* offset every other row */
 }
 
 /* Container holding everything: banks + board */
 #game-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  padding: 20px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+	padding: 20px;
 }
 
 /* Vertical columns for pieces */
 .piece-bank {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  align-items: center;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	align-items: center;
 }
 
 /* Optional label above piece bank */
 .piece-bank-label {
-  font-weight: bold;
-  margin-bottom: 5px;
-  color: inherit;
+	font-weight: bold;
+	margin-bottom: 5px;
+	color: inherit;
 }
 
 /* Piece images inside bank or on board */
 .piece-bank img,
 .hex-cell img {
-  width: 50px;
-  height: 50px;
-  user-select: none;
-  pointer-events: none;
+	width: 50px;
+	height: 50px;
+	user-select: none;
+	pointer-events: none;
 }
 
 /* Hover effect for hex cells */
 .hex-cell:hover {
-  background-color: #e0d678;
+	background-color: #e0d678;
 }
 
 #app {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 2rem;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
 }
 
 .board {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 5px;
-  margin-top: 20px;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 5px;
+	margin-top: 20px;
 }
 
 .hex-row {
-  display: flex;
-  gap: 5px;
+	display: flex;
+	gap: 5px;
 }
 
 /* offset every other row */
 .hex-row:nth-child(even) {
-  margin-left: 30px; 
+	margin-left: 30px; 
 }
 
 .hex-cell {
-  width: 60px;
-  height: 60px;
-  background-color: #e7e7e7;
-  clip-path: polygon(
-    25% 6.7%,
-    75% 6.7%,
-    100% 50%,
-    75% 93.3%,
-    25% 93.3%,
-    0% 50%
-  );
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #aaa;
+	width: 60px;
+	height: 60px;
+	background-color: #e7e7e7;
+	clip-path: polygon(
+		25% 6.7%,
+		75% 6.7%,
+		100% 50%,
+		75% 93.3%,
+		25% 93.3%,
+		0% 50%
+	);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid #aaa;
 }
 
 #hive-canvas {
-  display: block;
-  margin: 0 auto; 
-  margin-bottom: 50px;
+	display: block;
+	margin: 0 auto; 
+	margin-bottom: 50px;
 }
 
 .center-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;   
-  align-items: center;    
-  margin-top: 50px;
-  margin-bottom: 20px
+	display: flex;
+	flex-direction: column;
+	justify-content: center;   
+	align-items: center;    
+	margin-top: 50px;
+	margin-bottom: 20px
 }
 
 #game-status {
-  color: #ffe066;
-  min-height: 1.5em; 
-  text-align: center;
-  font-size: 1.2em;
+	color: #ffe066;
+	min-height: 1.5em; 
+	text-align: center;
+	font-size: 1.2em;
 }
 
 
 
 /* Overlay covers the screen */
 #popup-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(13, 3, 27, 0.85); 
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1000;
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(13, 3, 27, 0.85); 
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 1000;
 }
 
 /* Hidden by default */
 .hidden {
-  display: none !important;
+	display: none !important;
 }
 
 /* Popup box */
 .popup {
-  background: #1a0f2b; 
-  color: #ffe066;      
-  padding: 25px 35px;
-  border-radius: 16px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
-  text-align: center;
-  position: relative;
-  min-width: 280px;
-  animation: popIn 0.25s ease;
+	background: #1a0f2b; 
+	color: #ffe066;      
+	padding: 25px 35px;
+	border-radius: 16px;
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+	text-align: center;
+	position: relative;
+	min-width: 280px;
+	animation: popIn 0.25s ease;
 }
 
 /* Heading text */
 .popup h2 {
-  margin: 0;
-  font-size: 1.6rem;
-  font-weight: bold;
+	margin: 0;
+	font-size: 1.6rem;
+	font-weight: bold;
 }
 
 /* Close button (X) */
 #close-popup {
-  position: absolute;
-  top: 10px;
-  right: 14px;
-  font-size: 28px;
-  font-weight: bold;
-  color: #ffe066;
-  cursor: pointer;
-  transition: color 0.2s;
+	position: absolute;
+	top: 10px;
+	right: 14px;
+	font-size: 28px;
+	font-weight: bold;
+	color: #ffe066;
+	cursor: pointer;
+	transition: color 0.2s;
 }
 
 #close-popup:hover {
-  color: #ffffff;
+	color: #ffffff;
 }
 
 button
 {
-  margin-left: 40px;
-  background-color: #ffe066;
+	margin-left: 40px;
+	background-color: #ffe066;
 }
 
-/* Animation */
-/* @keyframes popIn {
-  from {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  to {
-    transform: scale(1);
-    opacity: 1;
-  }
-} */
+.rules {
+	position: absolute;
+	top: 20px;
+	right: 20px;
+	z-index: 1000;
+}
+
+.rules button {
+	background: transparent;
+	border: 2px solid #ffe066;
+	color: #ffe066;
+	padding: 6px 14px;
+	border-radius: 20px;
+	font-family: inherit;
+	font-size: 14px;
+	cursor: pointer;
+	transition: all 0.2s ease-in-out;
+}
+
+.rules button:hover {
+	background: #ffe066;
+	color: black;
+}
+
+#close-rules {
+	position: absolute;
+	top: 10px;
+	right: 14px;
+	font-size: 28px;
+	font-weight: bold;
+	color: #ffe066;
+	cursor: pointer;
+	transition: color 0.2s;
+}
+#close-rules  {
+	color: white;
+}
+#close-rules:hover {
+	color: #ffffff;
+}
+
+footer {
+	text-align: center;
+	padding: 10px;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	background: #000000;
+	font-size: 0.9em;
+}
+
+footer .project-note {
+	color: #aaa;
+	font-style: italic;
+}
+
+footer .author-link {
+	color: #ffe066; 
+	font-weight: bold;
+	text-decoration: none;
+}
+
+footer .author-link:hover {
+	text-decoration: underline;
+}
+
+.popup-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(0,0,0,0.7);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 2000;
+}
+
+.hidden {
+	display: none;
+}
+
+.popup-content {
+	position: relative;          /* makes ❌ position relative to box */
+	background: #111;
+	border: 2px solid #ffe066;
+	color: #ffe066;
+	border-radius: 12px;
+	padding: 30px 20px;
+	max-width: 500px;
+	text-align: center;
+	box-shadow: 0 8px 20px rgba(0,0,0,0.8);
+	font-family: sans-serif;
+}
+
+.popup-close {
+	position: absolute;
+	top: 10px;
+	right: 15px;
+	font-size: 28px;
+	color: #ffe066;
+	cursor: pointer;
+	transition: color 0.2s ease;
+}
+
+.popup-close:hover {
+	color: white;
+}
+
+/* Overlay (used for both win + rules popups) */
+.popup-overlay {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background: rgba(13, 3, 27, 0.85); /* same as win popup overlay */
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 2000;
+}
+
+/* Hidden by default */
+.hidden {
+	display: none !important;
+}
+
+/* Popup box (shared style for win + rules) */
+.popup,
+.popup-content {
+	background: #1a0f2b;        /* same dark violet as win popup */
+	color: #ffe066;             /* golden text */
+	padding: 25px 35px;
+	border-radius: 16px;
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
+	text-align: center;
+	position: relative;
+	min-width: 280px;
+	max-width: 500px;
+	animation: popIn 0.25s ease;
+	font-family: sans-serif;
+}
+
+/* Heading text */
+.popup h2,
+.popup-content h2 {
+	margin: 0 0 15px;
+	font-size: 1.6rem;
+	font-weight: bold;
+	color: #ffe066;
+}
+
+/* Close button (X) */
+#close-popup,
+#close-rules,
+.popup-close {
+	position: absolute;
+	top: 10px;
+	right: 14px;
+	font-size: 28px;
+	font-weight: bold;
+	color: #ffe066;
+	cursor: pointer;
+	transition: color 0.2s;
+}
+
+#close-popup:hover,
+#close-rules:hover,
+.popup-close:hover {
+	color: #ffffff;
+}

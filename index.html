@@ -1,70 +1,82 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
+	<head>
+		<meta charset="UTF-8" />
 
-    <!-- Favicon + PWA -->
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
-    <link rel="manifest" href="/site.webmanifest">
+		<!-- Favicon + PWA -->
+		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+		<link rel="icon" type="image/png" sizes="16x16" href="/favicon.ico">
+		<link rel="manifest" href="/site.webmanifest">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hive Game</title>
-    <style>
-      html, body {
-        margin: 0;
-        height: 100%;
-        background: #000000;  /* match your canvas background */
-        visibility: hidden;   /* hide until JS says ready */
-      }
-      body.ready {
-        visibility: visible;
-      }
-      footer {
-        text-align: center;
-        color: #ffe066;
-        padding: 10px;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        background: #000000;
-      }
-    </style>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>Hive Game</title>
+		<style>
+			html, body {
+				margin: 0;
+				height: 100%;
+				background: #000000;  /* match your canvas background */
+				visibility: hidden;   /* hide until JS says ready */
+			}
+			body.ready {
+				visibility: visible;
+			}
+			footer {
+				text-align: center;
+				color: #ffe066;
+				padding: 10px;
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+				background: #000000;
+			}
+		</style>
 
-    <!-- Preload external CSS to reduce flash -->
-    <link rel="preload" href="/src/style.css" as="style">
-    <link rel="stylesheet" href="/src/style.css">
-  </head>
-  <body>
-    <div id="game-container" class="hidden">
-      <div class="center-container">
-        <h1 class="bee-text">Hive Game</h1>
-        <div id="game-status"></div>
+		<!-- Preload external CSS to reduce flash -->
+		<link rel="preload" href="/src/style.css" as="style">
+		<link rel="stylesheet" href="/src/style.css">
+	</head>
+	<body>
+		<div id="game-container" class="hidden">
+			<div class="center-container">
+				<h1 class="bee-text">Hive Game</h1>
+				<div>
+						<div class="rules">
+							<button id="show-rules">Rules</button>
+						</div>
 
-        <div id="popup-overlay" class="hidden">
-          <div class="popup">
-            <span id="close-popup">&times;</span>
-            <h2 id="popup-message">White wins!</h2>
-          </div>
-        </div>
-      </div>
+					<!-- Overlay for rules popup -->
+						<div id="popup-rules" class="popup-overlay hidden">
+							<div class="popup-content">
+								<span id="close-rules" class="popup-close">&times;</span>
+								<h2>Game Rules</h2>
+								<p id="text-rules">
+									Surround your opponent’s Queen Bee to win the game. <br>
+									Each player must place their Queen within the first 4 turns. <br>
+									Pieces must always remain connected to the hive.
+								</p>
+							</div>
+					</div>
 
-      <canvas id="hive-canvas" width="1400" height="700"
-        style="border:1px solid #ffe066; display:block; margin:auto;">
-      </canvas>
-    </div>
+				</div>
+				 <div id="game-status"></div>
+			</div>
 
-    <footer>
-      <p>
-        ©2025 
-        <a href="https://github.com/MariiaZhytnikova" target="_blank">Mariia</a> & 
-        <a href="https://github.com/marinezh" target="_blank">Marina</a>
-      </p>
-    </footer>
+			<canvas id="hive-canvas" width="1400" height="750"
+				style="border:1px solid #ffe066; display:block; margin:auto;">
+			</canvas>
+		</div>
 
-    <!-- Your script -->
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+		<footer>
+			<p>
+				<span class="project-note">©2025 Developed as a Rush Project at Hive School</span> — 
+				<a href="https://github.com/MariiaZhytnikova" target="_blank" class="author-link">Mariia/mzhitnik</a> & 
+				<a href="https://github.com/marinezh" target="_blank" class="author-link">Marina/mzhivoto</a>
+			</p>
+		</footer>
+
+		<!-- Your script -->
+		<script type="module" src="/src/main.ts"></script>
+	</body>
 </html>
