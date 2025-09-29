@@ -2,6 +2,13 @@ import { Board } from "../models/Board";
 import { Piece } from "../models/Piece";
 import type { Player } from "../models/Piece";
 
+import { showWinnerPopup } from "../popup";
+
+// When you detect a win:
+showWinnerPopup("White"); // or showWinnerPopup("Black");
+
+
+
 /**
  * Game: manages game state and main rules.
  *

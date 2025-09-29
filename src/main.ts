@@ -1,3 +1,4 @@
+
 import './style.css';
 import { Game } from './game/Game';
 import { drawPieceBanks, layoutBankPositions } from './game/PieceBank';
@@ -235,4 +236,3 @@ function renderCanvasBoard() {
 // ---- BOOTSTRAP ----
 initPieceBanks();
 renderCanvasBoard();
-
