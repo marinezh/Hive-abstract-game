@@ -46,22 +46,57 @@ export class CanvasRenderer {
     return { x, y };
   }
 
+  // drawBoard(board: Board, hoveredHex?: { q: number; r: number } | null) {
+  //   const radius = 6;
+  //   for (let q = -radius; q <= radius; q++) {
+  //     for (let r = -radius; r <= radius; r++) {
+  //       if (Math.abs(q + r) <= radius) {
+  //         const { x, y } = this.hexToPixel(q, r);
+  //         if (hoveredHex && hoveredHex.q === q && hoveredHex.r === r) {
+  //           this.drawHexCustom(x, y, this.size, '#ffe066');
+  //         } else {
+  //           this.drawHexCustom(x, y, this.size);
+  //         }
+  //       }
+  //     }
+  //   }
+  //   // Draw all pieces
+  //   board.pieces.forEach(piece => this.drawPiece(piece));
+  // }
+
   drawBoard(board: Board, hoveredHex?: { q: number; r: number } | null) {
     const radius = 6;
+
+    // --- 1. Draw the hex grid ---
     for (let q = -radius; q <= radius; q++) {
       for (let r = -radius; r <= radius; r++) {
         if (Math.abs(q + r) <= radius) {
           const { x, y } = this.hexToPixel(q, r);
-          if (hoveredHex && hoveredHex.q === q && hoveredHex.r === r) {
-            this.drawHexCustom(x, y, this.size, '#ffe066');
-          } else {
-            this.drawHexCustom(x, y, this.size);
-          }
+          const isHovered = hoveredHex && hoveredHex.q === q && hoveredHex.r === r;
+          this.drawHexCustom(x, y, this.size, isHovered ? '#ffe066' : undefined);
         }
       }
     }
-    // Draw all pieces
-    board.pieces.forEach(piece => this.drawPiece(piece));
+
+    // --- 2. Group pieces by stack position ---
+    const stacksByCoord = new Map<string, Piece[]>();
+
+    for (const piece of board.pieces) {
+      const key = `${piece.position.q},${piece.position.r}`;
+      if (!stacksByCoord.has(key)) {
+        stacksByCoord.set(key, []);
+      }
+      stacksByCoord.get(key)!.push(piece);
+    }
+
+    // --- 3. Draw pieces from bottom to top of each stack ---
+    for (const stack of stacksByCoord.values()) {
+      // Optional: sort by a `stackLevel` property if you track it
+      stack.sort((a, b) => a.stackLevel - b.stackLevel);
+      for (const piece of stack) {
+        this.drawPiece(piece);
+      }
+    }
   }
 
   drawHexCustom(x: number, y: number, size: number, fill: string = '#ddd') {
