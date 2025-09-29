@@ -186,4 +186,5 @@ function renderCanvasBoard() {
 // ---- BOOTSTRAP ----
 initPieceBanks();
 renderCanvasBoard();
-
+document.getElementById("game-container")?.classList.remove("hidden");
+document.body.classList.add("ready");
