@@ -1,10 +1,13 @@
 import './style.css';
+//import { showPopup } from "./popup";
+import "./popup";
 import { Game } from './game/Game';
 import { drawPieceBanks, layoutBankPositions } from './game/PieceBank';
 import type { BankPiece } from './game/PieceBank';
 import { pixelToHex } from './game/hexUtils';
 import { createPiece } from './models/createPiece';
 import { CanvasRenderer } from './game/CanvasRenderer';
+import {showWinnerPopup} from './popup'
 import type { Piece, Player } from './models/Piece';
 
 
@@ -149,6 +152,7 @@ canvas.addEventListener('click', (e) => {
 		const winner = game.checkWin();
 		if (winner) {
 		  console.log(`Winner: ${winner}`);
+		  showWinnerPopup(winner);
 		}
 	}
 });
@@ -182,4 +186,5 @@ function renderCanvasBoard() {
 // ---- BOOTSTRAP ----
 initPieceBanks();
 renderCanvasBoard();
-
+document.getElementById("game-container")?.classList.remove("hidden");
+document.body.classList.add("ready");
