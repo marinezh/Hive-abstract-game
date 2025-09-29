@@ -1,11 +1,13 @@
 import { Board } from "../models/Board";
 import { Piece } from "../models/Piece";
 import type { Player } from "../models/Piece";
+
 import { showWinnerPopup } from "../popup";
 
 // When you detect a win:
 showWinnerPopup("White"); // or showWinnerPopup("Black");
-import * as Models from  "../models/index"; 
+
+
 
 /**
  * Game: manages game state and main rules.
@@ -31,16 +33,6 @@ export class Game {
     this.turnCount = 1;
   }
 
-  playPiece(piece: Piece, coord: { q: number; r: number }): boolean {
-    // validate placement using the same checks as placePiece
-    const ok = this.placePiece(piece, coord);
-    if (!ok) return false;
-
-    // if placement succeeded, advance the turn
-    this.nextTurn();
-    return true;
-  }
-
   /** Switch to the other player and increment turn */
   nextTurn(): void {
     this.currentPlayer = this.currentPlayer === "White" ? "Black" : "White";
@@ -57,14 +49,24 @@ export class Game {
   placePiece(piece: Piece, coord: { q: number; r: number }): boolean {
     // destination must be empty
     console.log("placePiece", coord.q, coord.r);
+
     if (piece.owner !== this.currentPlayer) return false;
     if (!this.board.isEmpty(coord)) return false;
 
-    // require contact with hive except for very first move
-    if (this.board.pieces.length > 0) {
+    if (this.board.pieces.length === 0) {
+      this.board.addPiece(piece, coord);
+      return true;
+    }
+  
+
+    if (this.board.pieces.length === 1) {
+      // black’s first move cannot touch opponent’s piece
       const neighbors = this.board.neighbors(coord);
-      const touching = neighbors.some(n => !this.board.isEmpty(n));
-      if (!touching) return false;
+      if (neighbors.some(n => !this.board.isEmpty(n))) return false;
+    } else if (this.board.pieces.length > 1) {
+      // other moves must touch hive
+      const neighbors = this.board.neighbors(coord);
+      if (!neighbors.some(n => !this.board.isEmpty(n))) return false;
     }
 
     // queen-bee rule: each player must place queen by their 4th turn
@@ -108,8 +110,6 @@ export class Game {
       piece.position = old;
       return false;
     }
-
-    this.nextTurn();
     return true;
   }
 
