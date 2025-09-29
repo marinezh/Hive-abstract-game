@@ -101,27 +101,55 @@ canvas.addEventListener('click', (e) => {
 	}
 
 	// 3) PLACE OR MOVE
-	if (selected) {
-		 const sel = selected; 
-		const target = pixelToHex(clickX - centerX, clickY - centerY, HEX_SIZE);
+	// if (selected) {
+	// 	 const sel = selected; 
+	// 	const target = pixelToHex(clickX - centerX, clickY - centerY, HEX_SIZE);
 
-		if (sel.from === "bank") {
-			const pieceObj = createPiece(sel.type, sel.color, target);
-			if (pieceObj) {
-				game.board.addPiece(pieceObj, target);
+	// 	if (sel.from === "bank") {
+	// 		const pieceObj = createPiece(sel.type, sel.color, target);
+	// 		if (pieceObj) {
+	// 			game.board.addPiece(pieceObj, target);
 
-				// remove from bank + reflow
-				const idx = bankPieces.findIndex(p => p.id === sel.bankId);
-				if (idx !== -1) {
-					bankPieces.splice(idx, 1);
-					layoutBankPositions(bankPieces, canvas.width, dpr, pieceSize);
-				}
-			}
-		} else if (sel.from === "board") {
-		sel.ref.position = target;
-	}
-		selected = null;
-		renderCanvasBoard();
+	// 			// remove from bank + reflow
+	// 			const idx = bankPieces.findIndex(p => p.id === sel.bankId);
+	// 			if (idx !== -1) {
+	// 				bankPieces.splice(idx, 1);
+	// 				layoutBankPositions(bankPieces, canvas.width, dpr, pieceSize);
+	// 			}
+	// 		}
+	// 	} else if (sel.from === "board") {
+	// 	sel.ref.position = target;
+	// }
+	// 	selected = null;
+	// 	renderCanvasBoard();
+	// }
+		if (selected) {
+	  const sel = selected;
+	  const target = pixelToHex(clickX - centerX, clickY - centerY, HEX_SIZE);
+
+	  if (sel.from === "bank") {
+	    const pieceObj = createPiece(sel.type, sel.color, target);
+	    if (pieceObj && game.placePiece(pieceObj, target)) {
+	      // remove from bank + reflow
+	      const idx = bankPieces.findIndex(p => p.id === sel.bankId);
+	      if (idx !== -1) {
+	        bankPieces.splice(idx, 1);
+	        layoutBankPositions(bankPieces, canvas.width, dpr, pieceSize);
+	      }
+				 game.nextTurn(); 
+	    }
+	  } else if (sel.from === "board") {
+	    game.movePiece(sel.ref, target);
+	  }
+	  selected = null;
+	  renderCanvasBoard();
+		document.getElementById('game-status')!.textContent = `Next move: ${game.currentPlayer}`;
+		// DEBUG (check the winner)
+
+		const winner = game.checkWin();
+		if (winner) {
+		  console.log(`Winner: ${winner}`);
+		}
 	}
 });
 
@@ -154,3 +182,4 @@ function renderCanvasBoard() {
 // ---- BOOTSTRAP ----
 initPieceBanks();
 renderCanvasBoard();
+
