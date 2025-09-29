@@ -6,6 +6,7 @@ import type { BankPiece } from './game/PieceBank';
 import { pixelToHex } from './game/hexUtils';
 import { createPiece } from './models/createPiece';
 import { CanvasRenderer, loadPieceImage } from './game/CanvasRenderer';
+import {showWinnerPopup} from './popup'
 import type { Piece, Player } from './models/Piece';
 
 let validMoves: { q: number; r: number }[] = [];
@@ -139,10 +140,12 @@ canvas.addEventListener('click', (e) => {
 
     // DEBUG (check the winner)
 
-    const winner = game.checkWin();
-    if (winner) {
-      console.log(`Winner: ${winner}`);
-    }
+
+		const winner = game.checkWin();
+		if (winner) {
+		  console.log(`Winner: ${winner}`);
+		  showWinnerPopup(winner);
+		}
 	}
 });
 
