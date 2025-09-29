@@ -4,17 +4,22 @@ export function pixelToHex(x: number, y: number, hexSize: number): { q: number, 
   return hexRound({ q, r });
 }
 
-export function hexRound(hex: { q: number, r: number }) {
-  let q = Math.round(hex.q);
-  let r = Math.round(hex.r);
-  let s = Math.round(-hex.q - hex.r);
+function hexRound({ q, r }: { q: number, r: number }): { q: number, r: number } {
+  const s = -q - r;
 
-  const q_diff = Math.abs(q - hex.q);
-  const r_diff = Math.abs(r - hex.r);
-  const s_diff = Math.abs(s - (-hex.q - hex.r));
+  let rq = Math.round(q);
+  let rr = Math.round(r);
+  let rs = Math.round(s);
 
-  if (q_diff > r_diff && q_diff > s_diff)       q = -r - s;
-  else if (r_diff > s_diff)                     r = -q - s;
-  console.log(q, r);
-  return { q, r };
+  const q_diff = Math.abs(rq - q);
+  const r_diff = Math.abs(rr - r);
+  const s_diff = Math.abs(rs - s);
+
+  if (q_diff > r_diff && q_diff > s_diff) {
+    rq = -rr - rs;
+  } else if (r_diff > s_diff) {
+    rr = -rq - rs;
+  }
+
+  return { q: rq, r: rr };
 }
