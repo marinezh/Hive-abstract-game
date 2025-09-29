@@ -88,7 +88,7 @@ canvas.addEventListener('click', (e) => {
       const b = bankPieces[i];
       if (
         clickX >= b.x && clickX <= b.x + b.width &&
-        clickY >= b.y && clickY <= b.y + b.height
+        clickY >= b.y && clickY <= b.y + b.height 
       ) {
         selected = { from: "bank", bankId: b.id, type: b.type, color: b.color };
         return;
@@ -100,7 +100,7 @@ canvas.addEventListener('click', (e) => {
     const hex = pixelToHex(clickX - centerX, clickY - centerY, HEX_SIZE);
     for (let i = game.board.pieces.length - 1; i >= 0; i--) {
       const p = game.board.pieces[i];
-      if (p.position.q === hex.q && p.position.r === hex.r) {
+      if (p.position.q === hex.q && p.position.r === hex.r && p.owner === game.currentPlayer) {
         console.log('Click hex:', hex);                 /// LOG
         selected = { from: "board", ref: p };
         validMoves = p.legalMoves(game.board);
@@ -131,8 +131,9 @@ canvas.addEventListener('click', (e) => {
       if (game.movePiece(sel.ref, target)) {
         console.log("Move successful");           /// LOG
         game.nextTurn();
+      } else {
+        console.log("Move failed");                 /// LOG
       }
-      console.log("Move failed");                 /// LOG
     }
     selected = null;
     renderCanvasBoard();

@@ -100,16 +100,26 @@ export class Game {
     // check if move legal
     const legal = piece.legalMoves(this.board);
     const allowed = legal.some(c => c.q === to.q && c.r === to.r);
-    if (!allowed) return false;
+    if (!allowed) {
+      console.log("Move failed: Not a legal move");
+      console.log("Legal moves:", legal);
+      console.log("Attempted move to:", to);
+    return false;
+    }
+
 
     // try the move and ensure hive stays intact
-    const old = { ...piece.position };
-    piece.position = to;
-    if (!this.board.isHiveIntact(old)) {
-      // revert if the hive would break
-      piece.position = old;
-      return false;
+    if (this.board.pieces.length > 2) {
+      const old = { ...piece.position };
+      piece.position = to;
+      if (!this.board.isHiveIntact(old)) {
+        // revert if the hive would break
+        piece.position = old;
+        console.log("Move failed: Hive not intact");
+        return false;
+      }
     }
+    
     return true;
   }
 
