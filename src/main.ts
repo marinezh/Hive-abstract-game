@@ -1,5 +1,6 @@
-
 import './style.css';
+//import { showPopup } from "./popup";
+import "./popup";
 import { Game } from './game/Game';
 import { drawPieceBanks, layoutBankPositions } from './game/PieceBank';
 import type { BankPiece } from './game/PieceBank';
@@ -240,3 +241,5 @@ function renderCanvasBoard() {
 // ---- BOOTSTRAP ----
 initPieceBanks();
 renderCanvasBoard();
+document.getElementById("game-container")?.classList.remove("hidden");
+document.body.classList.add("ready");
