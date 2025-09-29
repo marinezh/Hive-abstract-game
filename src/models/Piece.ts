@@ -15,3 +15,8 @@ export abstract class Piece {
   /** Return all legal target coordinates from current position */
   abstract legalMoves(board: Board): HexCoord[];
 }
+export interface Piece {
+  type: string;        // like "bee", "spider"…
+  owner: "White" | "Black"; // color of player
+  position: HexCoord;  // {q, r}
+}

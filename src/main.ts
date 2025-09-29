@@ -1,97 +1,190 @@
-// main.ts
 import './style.css';
+//import { showPopup } from "./popup";
+import "./popup";
 import { Game } from './game/Game';
-import { QueenBee } from './models/QueenBee';
-// import { Board } from './models/Board';
-import type { Piece, HexCoord } from './models/Piece';
-// import type { Player } from "./models/Piece";
+import { drawPieceBanks, layoutBankPositions } from './game/PieceBank';
+import type { BankPiece } from './game/PieceBank';
+import { pixelToHex } from './game/hexUtils';
+import { createPiece } from './models/createPiece';
+import { CanvasRenderer } from './game/CanvasRenderer';
+import {showWinnerPopup} from './popup'
+import type { Piece, Player } from './models/Piece';
 
 
-// Get the app container
-const app = document.getElementById('app')!;
-app.innerHTML = `
-  <h1>Hive Game</h1>
-  <div id="game-container">
-    <div id="white-bank" class="piece-bank">
-      <div class="piece-bank-label">White Pieces</div>
-    </div>
-    <div id="board" class="board"></div>
-    <div id="black-bank" class="piece-bank">
-      <div class="piece-bank-label">Black Pieces</div>
-    </div>
-  </div>
-`;
+let bankPieces: BankPiece[] = [];
+let selected:
+	| { from: "bank"; bankId: string; type: BankPiece["type"]; color: Player }
+	| { from: "board"; ref: Piece }
+	| null = null;
+
+const canvas = document.getElementById('hive-canvas') as HTMLCanvasElement;
+
+// High-DPI setup
+const dpr = window.devicePixelRatio || 1;
+canvas.width = 1000 * dpr;
+canvas.height = 750 * dpr;
+canvas.style.width = "1000px";
+canvas.style.height = "750px";
+
+// Create renderer and scale context
+const renderer = new CanvasRenderer(canvas);
+renderer.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
 const game = new Game();
 
-// Example: add a white QueenBee at center (0,0)
-// Example: place a white QueenBee in center (0,0)
-const center: HexCoord = { q: 0, r: 0 };
-const queen = new QueenBee('White', center);
-game.board.addPiece(queen);
+// Correct counts per color
+const pieceBankConfig: Array<{ type: BankPiece["type"]; count: number }> = [
+	{ type: "bee", count: 1 },
+	{ type: "spider", count: 2 },
+	{ type: "beetle", count: 2 },
+	{ type: "hopper", count: 3 },
+	{ type: "ant", count: 3 },
+];
+const pieceSize = 50;
 
-// ----- Render piece banks -----
-function renderPieceBank(player: "White" | "Black") {
-  const bank = document.getElementById(player.toLowerCase() + "-bank")!;
-  // clear previous pieces except the label
-  Array.from(bank.children)
-       .filter(el => !el.classList.contains("piece-bank-label"))
-       .forEach(el => el.remove());
+const HEX_SIZE = 40;
 
-  const pieceTypes = ["queenbee", "beetle", "spider", "grasshopper", "soldier"];
+// 🆕 ID helper
+let _id = 0;
+function uid() { return `p_${_id++}`; }
 
-  for (let i = 0; i < 11; i++) {
-    const type = pieceTypes[i % pieceTypes.length];
-    const img = document.createElement("img");
-    img.src = `./src/assets/${type}_${player.toLowerCase()}.png`;
-    img.alt = type;
-    img.draggable = true; // for future drag-drop
-    bank.appendChild(img);
-  }
+// Build the full bank once
+function initPieceBanks() {
+	bankPieces = [];
+	(["Black", "White"] as const).forEach((color) => {
+		pieceBankConfig.forEach(({ type, count }) => {
+			for (let i = 0; i < count; i++) {
+				bankPieces.push({
+					id: uid(),
+					x: 0, y: 0,
+					type,
+					color,
+					width: pieceSize,
+					height: pieceSize,
+				});
+			}
+		});
+	});
+	layoutBankPositions(bankPieces, canvas.width, dpr, pieceSize);
 }
 
-renderPieceBank("White");
-renderPieceBank("Black");
+let hoveredHex: { q: number, r: number } | null = null;
 
-// ----- Render board -----
-function renderBoard() {
-  const boardDiv = document.getElementById('board')!;
-  boardDiv.innerHTML = '';
+// ---- CLICK HANDLER ----
+canvas.addEventListener('click', (e) => {
+	const rect = canvas.getBoundingClientRect();
+	const clickX = e.clientX - rect.left;
+	const clickY = e.clientY - rect.top;
 
-  const size = 5; // placeholder 5x5 grid
-  for (let r = -2; r <= 2; r++) {
-    const row = document.createElement('div');
-    row.className = 'hex-row';
+	const centerX = canvas.width / dpr / 2;
+	const centerY = canvas.height / dpr / 2;
 
-    for (let q = -2; q <= 2; q++) {
-      const cell = document.createElement('div');
-      cell.className = 'hex-cell';
-      cell.id = `cell-${q}-${r}`;
+	// 1) BANK HIT-TEST
+	for (let i = bankPieces.length - 1; i >= 0; i--) {
+		const b = bankPieces[i];
+		if (
+			clickX >= b.x && clickX <= b.x + b.width &&
+			clickY >= b.y && clickY <= b.y + b.height
+		) {
+			selected = { from: "bank", bankId: b.id, type: b.type, color: b.color };
+			return;
+		}
+	}
 
-      // Place piece image if a piece exists here
-      const piece = game.board.pieces.find(p => p.position.q === q && p.position.r === r);
-      if (piece) {
-        const img = document.createElement('img');
-        img.src = `./src/assets/${piece.constructor.name.toLowerCase()}_${piece.owner.toLowerCase()}.png`;
-        img.alt = piece.constructor.name;
-        cell.appendChild(img);
-      }
+	// 2) BOARD PIECE HIT-TEST
+	for (let i = game.board.pieces.length - 1; i >= 0; i--) {
+		const p = game.board.pieces[i];
+		const { q, r } = p.position;
+		const { x, y } = renderer.hexToPixel(q, r);
+		const dx = clickX - x, dy = clickY - y;
+		if (dx*dx + dy*dy <= (HEX_SIZE * 0.8) ** 2) {
+			selected = { from: "board", ref: p };
+			return;
+		}
+	}
 
-      row.appendChild(cell);
-    }
+	// 3) PLACE OR MOVE
+	// if (selected) {
+	// 	 const sel = selected; 
+	// 	const target = pixelToHex(clickX - centerX, clickY - centerY, HEX_SIZE);
 
-    boardDiv.appendChild(row);
-  }
-}
+	// 	if (sel.from === "bank") {
+	// 		const pieceObj = createPiece(sel.type, sel.color, target);
+	// 		if (pieceObj) {
+	// 			game.board.addPiece(pieceObj, target);
 
-renderBoard();
+	// 			// remove from bank + reflow
+	// 			const idx = bankPieces.findIndex(p => p.id === sel.bankId);
+	// 			if (idx !== -1) {
+	// 				bankPieces.splice(idx, 1);
+	// 				layoutBankPositions(bankPieces, canvas.width, dpr, pieceSize);
+	// 			}
+	// 		}
+	// 	} else if (sel.from === "board") {
+	// 	sel.ref.position = target;
+	// }
+	// 	selected = null;
+	// 	renderCanvasBoard();
+	// }
+		if (selected) {
+	  const sel = selected;
+	  const target = pixelToHex(clickX - centerX, clickY - centerY, HEX_SIZE);
 
-// ----- Click handler for board cells -----
-const boardEl = document.getElementById('board')!;
-boardEl.addEventListener('click', (e) => {
-  const target = e.target as HTMLElement;
-  const cell = target.closest('.hex-cell') as HTMLElement;
-  if (!cell) return;
-  console.log('Clicked cell:', cell.id);
-  // TODO: move piece logic
+	  if (sel.from === "bank") {
+	    const pieceObj = createPiece(sel.type, sel.color, target);
+	    if (pieceObj && game.placePiece(pieceObj, target)) {
+	      // remove from bank + reflow
+	      const idx = bankPieces.findIndex(p => p.id === sel.bankId);
+	      if (idx !== -1) {
+	        bankPieces.splice(idx, 1);
+	        layoutBankPositions(bankPieces, canvas.width, dpr, pieceSize);
+	      }
+				 game.nextTurn(); 
+	    }
+	  } else if (sel.from === "board") {
+	    game.movePiece(sel.ref, target);
+	  }
+	  selected = null;
+	  renderCanvasBoard();
+		document.getElementById('game-status')!.textContent = `Next move: ${game.currentPlayer}`;
+		// DEBUG (check the winner)
+
+		const winner = game.checkWin();
+		if (winner) {
+		  console.log(`Winner: ${winner}`);
+		  showWinnerPopup(winner);
+		}
+	}
 });
+
+canvas.addEventListener('mousemove', (e) => {
+	const rect = canvas.getBoundingClientRect();
+	const mouseX = e.clientX - rect.left;
+	const mouseY = e.clientY - rect.top;
+	const centerX = canvas.width / dpr / 2;
+	const centerY = canvas.height / dpr / 2;
+	const newHoveredHex = pixelToHex(mouseX - centerX, mouseY - centerY, HEX_SIZE);
+	// Only redraw if hovered hex actually changes
+	if (!hoveredHex || hoveredHex.q !== newHoveredHex.q || hoveredHex.r !== newHoveredHex.r) {
+		hoveredHex = newHoveredHex;
+		renderCanvasBoard();
+	}
+});
+
+canvas.addEventListener('mouseleave', () => {
+	hoveredHex = null;
+	renderCanvasBoard();
+});
+
+// ---- RENDER LOOP ----
+function renderCanvasBoard() {
+	renderer.clear();
+	drawPieceBanks(bankPieces, renderer.ctx);
+	renderer.drawBoard(game.board, hoveredHex);
+}
+
+// ---- BOOTSTRAP ----
+initPieceBanks();
+renderCanvasBoard();
+document.getElementById("game-container")?.classList.remove("hidden");
+document.body.classList.add("ready");

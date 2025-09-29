@@ -11,7 +11,7 @@ import { canSlide } from "./utils";
  * - Every intermediate step must obey the sliding (corridor) rule.
  * - Functionally: explore all reachable empty cells that satisfy sliding.
  */
-export class Ant extends Piece {
+export class SoldierAnt extends Piece {
   legalMoves(board: Board): HexCoord[] {
     const results: HexCoord[] = [];
     const visited = new Set<string>();
