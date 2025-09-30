@@ -4,14 +4,14 @@ import QueenBee_black from "../assets/QueenBee_black.png";
 import SoldierAnt_white from "../assets/SoldierAnt_white.png";
 import SoldierAnt_black from "../assets/SoldierAnt_black.png";
 
-import Beetle_white from "../assets/Beetle_white.png";
-import Beetle_black from "../assets/Beetle_black.png";
+import Beetle_white from "../assets/beetle_white.png";
+import Beetle_black from "../assets/beetle_black.png";
 
 import Grasshopper_white from "../assets/Grasshopper_white.png";
 import Grasshopper_black from "../assets/Grasshopper_black.png";
 
-import Spider_white from "../assets/Spider_white.png";
-import Spider_black from "../assets/Spider_black.png";
+import Spider_white from "../assets/spider_white.png";
+import Spider_black from "../assets/spider_black.png";
 
 
 import { Board } from '../models/Board';
