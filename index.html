@@ -50,12 +50,42 @@
 						<div id="popup-rules" class="popup-overlay hidden">
 							<div class="popup-content">
 								<span id="close-rules" class="popup-close">&times;</span>
-								<h2>Game Rules</h2>
-								<p id="text-rules">
-									Surround your opponent’s Queen Bee to win the game. <br>
-									Each player must place their Queen within the first 4 turns. <br>
-									Pieces must always remain connected to the hive.
-								</p>
+								<section id="rules" aria-labelledby="rules-title">
+								  <h2 id="rules-title">Hive Rules</h2>
+
+								  <ol class="rules-list">
+								    <li>
+								      <h3>Placement</h3>
+								      <p>New pieces must touch at least one of your own pieces.</p>
+								      <p>They cannot be placed touching an opponent’s piece directly.</p>
+								    </li>
+
+								    <li>
+								      <h3>Queen Bee Rule</h3>
+								      <p>You must place your Queen Bee by your 4th turn.</p>
+								      <p>No pieces may be moved until your Queen is placed.</p>
+								    </li>
+
+								    <li>
+								      <h3>One Hive Rule</h3>
+								      <p>The hive must always remain a single connected group.</p>
+								      <p>You cannot move a piece if it would split the hive.</p>
+								    </li>
+
+								    <li>
+								      <h3>Freedom to Move</h3>
+								      <p>Sliding pieces must have physical space to move.</p>
+								      <p>If both sides are blocked, you cannot slide in or out.</p>
+								    </li>
+
+								    <li>
+								      <h3>Stacking (Beetle Only)</h3>
+								      <p>Only Beetles can climb.</p>
+								      <p>A Beetle on top controls the stack; covered pieces cannot move until uncovered.</p>
+								    </li>
+								  </ol>
+								</section>
+
 							</div>
 					</div>
 
