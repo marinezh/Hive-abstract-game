@@ -1,4 +1,4 @@
-import type { HexCoord } from "./Piece";
+import type { HexCoord, Piece } from "./Piece";
 import type { Board } from "./Board";
 
 /** cells adjacent to both `a` and `b` */
@@ -22,9 +22,6 @@ export function canSlide(board: Board, from: HexCoord, to: HexCoord): boolean {
   const hasNeighbor = neighbors.some(n => !board.isEmpty(n));
   if (!hasNeighbor) return false;
 
-  // check that hive stays connected
-  if (!board.isHiveIntact(from)) return false;
-
   // corridor rule: the two cells adjacent to BOTH from & to
   const shared = sharedNeighbors(board, from, to);
   const blocked = shared.length === 2 &&
@@ -32,4 +29,16 @@ export function canSlide(board: Board, from: HexCoord, to: HexCoord): boolean {
   if (blocked) return false;
 
   return true;
+}
+
+// export function isTopPiece(piece: Piece, board: Board): boolean {
+//   const stack = board.getStackAt(piece.position);
+//   if (stack.length === 0) return false;  // no pieces, so no bottom piece
+//   const bottomPiece = stack[0];          // first piece in the stack is the bottom
+//   return bottomPiece === piece;
+// }
+
+export function isTopPiece(piece: Piece, board: Board): boolean {
+  const stack = board.getStackAt(piece.position);
+  return stack.length > 0 && stack[stack.length - 1] === piece;
 }

@@ -11,27 +11,29 @@ import { canSlide } from "./utils";
  *   any adjacent hex (empty or occupied) without corridor checks.
  */
 export class Beetle extends Piece {
+  readonly type = "beetle";
   legalMoves(board: Board): HexCoord[] {
     const neighbors = board.neighbors(this.position);
     const moves: HexCoord[] = [];
 
     for (const c of neighbors) {
       const destEmpty = board.isEmpty(c);
-      const onTop = board.stackHeight(this.position) > 0;
+      const onTop = board.stackHeight(this.position) > 1; // >1 means beetle is on top
 
       if (destEmpty) {
         if (onTop) {
-          // already on a stack, can drop down or slide—no corridor restriction
-          if (board.isHiveIntact(this.position)) moves.push(c);
+          // beetle on top can drop down or slide, no corridor check here
+          moves.push(c);
         } else {
-          // on ground and target empty → must slide
+          // on ground, must slide to empty spot
           if (canSlide(board, this.position, c)) moves.push(c);
         }
       } else {
-        // occupied destination → beetle can climb up
-        if (board.isHiveIntact(this.position)) moves.push(c);
+        // occupied spot means beetle can climb up
+        moves.push(c);
       }
     }
+
     return moves;
   }
 }

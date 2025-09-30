@@ -4,8 +4,9 @@ export type HexCoord = { q: number; r: number };
 export type Player = "White" | "Black";
 
 export abstract class Piece {
-  readonly owner: Player;
+  public owner: Player;
   position: HexCoord;
+  stackLevel: number = 0;
 
   constructor(owner: Player, position: HexCoord) {
     this.owner = owner;

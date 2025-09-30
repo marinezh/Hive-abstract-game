@@ -5,7 +5,6 @@ import { showWinnerPopup } from "../popup";
 
 // When you detect a win:
 showWinnerPopup("White"); // or showWinnerPopup("Black");
-import * as Models from  "../models/index"; 
 
 /**
  * Game: manages game state and main rules.
@@ -31,16 +30,6 @@ export class Game {
     this.turnCount = 1;
   }
 
-  playPiece(piece: Piece, coord: { q: number; r: number }): boolean {
-    // validate placement using the same checks as placePiece
-    const ok = this.placePiece(piece, coord);
-    if (!ok) return false;
-
-    // if placement succeeded, advance the turn
-    this.nextTurn();
-    return true;
-  }
-
   /** Switch to the other player and increment turn */
   nextTurn(): void {
     this.currentPlayer = this.currentPlayer === "White" ? "Black" : "White";
@@ -57,15 +46,26 @@ export class Game {
   placePiece(piece: Piece, coord: { q: number; r: number }): boolean {
     // destination must be empty
     console.log("placePiece", coord.q, coord.r);
+
     if (piece.owner !== this.currentPlayer) return false;
     if (!this.board.isEmpty(coord)) return false;
 
-    // require contact with hive except for very first move
-    if (this.board.pieces.length > 0) {
-      const neighbors = this.board.neighbors(coord);
-      const touching = neighbors.some(n => !this.board.isEmpty(n));
-      if (!touching) return false;
+    if (this.board.pieces.length === 0) {
+      this.board.addPiece(piece, coord);
+      return true;
     }
+  
+    const neighbors = this.board.neighbors(coord);
+    let touchesOwn = false;
+
+    for (const n of neighbors) {
+      const piece = this.board.pieces.find(p => p.position.q === n.q && p.position.r === n.r);
+      if (!piece) continue;
+      if (piece.owner === this.currentPlayer) touchesOwn = true;
+      else return false;
+    }
+
+    if (this.board.pieces.length > 1 && !touchesOwn) return false;
 
     // queen-bee rule: each player must place queen by their 4th turn
     const samePlayerPieces = this.board.pieces.filter(
@@ -78,6 +78,7 @@ export class Game {
 
     // all checks passed: add to board
     this.board.addPiece(piece, coord);
+    this.board.updateStackLevelsAt(coord);
     return true;
   }
 
@@ -98,21 +99,30 @@ export class Game {
     // check if move legal
     const legal = piece.legalMoves(this.board);
     const allowed = legal.some(c => c.q === to.q && c.r === to.r);
-    if (!allowed) return false;
+    if (!allowed) {
+      console.log("Move failed: Not a legal move");
+      console.log("Legal moves:", legal);
+      console.log("Attempted move to:", to);
+    return false;
+    }
 
     // try the move and ensure hive stays intact
     const old = { ...piece.position };
-    piece.position = to;
-    if (!this.board.isHiveIntact(old)) {
-      // revert if the hive would break
-      piece.position = old;
-      return false;
+    if (this.board.pieces.length > 2) {
+      piece.position = to;
+      if (!this.board.isHiveIntact(piece, piece.owner)) {
+        // revert if the hive would break
+        piece.position = old;
+        console.log("Move failed: Hive not intact");
+        return false;
+      }
     }
 
-    this.nextTurn();
+    piece.position = to;
+    // this.board.updateStackLevelsAt(old);
+    piece.stackLevel = this.board.updateStackLevelsAt(to);
     return true;
   }
-
 
   checkWin(): Player | null {
     const queens = this.board.pieces.filter(p => p.constructor.name === "QueenBee");
