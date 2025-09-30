@@ -20,8 +20,8 @@ import { Piece } from '../models/Piece';
 const piecePaths: Record<string, string> = {
   "QueenBee_white": QueenBee_white,
   "QueenBee_black": QueenBee_black,
-  "Ant_white": Ant_white,
-  "Ant_black": Ant_black,
+  "SoldierAnt_white": Ant_white,
+  "SoldierAnt_black": Ant_black,
   "Beetle_white": Beetle_white,
   "Beetle_black": Beetle_black,
   "Grasshopper_white": Grasshopper_white,
@@ -34,7 +34,7 @@ console.log("piecePaths", piecePaths);
 const pieceImages: Record<string, HTMLImageElement> = {};
 
 export function loadPieceImage(type: string, color: string): HTMLImageElement {
-const key = `${type}_${color.toLowerCase()}`;
+  const key = `${type}_${color.toLowerCase()}`;
 
   if (!piecePaths[key]) {
     console.error(
