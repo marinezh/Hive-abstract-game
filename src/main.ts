@@ -122,8 +122,14 @@ canvas.addEventListener('click', (e) => {
     const target = pixelToHex(clickX - centerX, clickY - centerY, HEX_SIZE); /// PLACE of insert
 
     if (sel.from === "bank") {                   /// BANK
+      console.log(`🔄 Attempting to place piece: type=${sel.type}, color=${sel.color}, target=`, target);
       const pieceObj = createPiece(sel.type, sel.color, target);
+      console.log(`🎯 Created piece:`, pieceObj);
+      
       if (pieceObj && game.placePiece(pieceObj, target)) {
+        console.log(`✅ Piece placed successfully at (${target.q}, ${target.r})`);
+        console.log(`📊 Board now has ${game.board.pieces.length} pieces`);
+        
         // remove from bank + reflow
         const idx = bankPieces.findIndex(p => p.id === sel.bankId);
         if (idx !== -1) {
@@ -131,6 +137,9 @@ canvas.addEventListener('click', (e) => {
           layoutBankPositions(bankPieces, canvas.width, dpr, pieceSize);
         }
           game.nextTurn(); 
+      } else {
+        console.log(`❌ Failed to place piece at (${target.q}, ${target.r})`);
+        if (!pieceObj) console.log(`❌ Piece creation failed`);
       }
     } else if (sel.from === "board") {            /// BOARD
       if (game.movePiece(sel.ref, target)) {
@@ -216,6 +225,7 @@ function getMousePos(evt: MouseEvent, canvas: HTMLCanvasElement) {
 ////////////////////////////////////////////////////////////////////////////////
 
 function renderCanvasBoard() {
+  console.log(`🎨 Rendering board with ${game.board.pieces.length} pieces`);
   renderer.clear();
 
   // ---- Valid Moves ----

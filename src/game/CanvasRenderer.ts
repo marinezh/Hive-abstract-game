@@ -155,14 +155,28 @@ export class CanvasRenderer {
       const { x, y } = this.hexToPixel(q, r);
       const size = this.size;
 
-      // Теперь без костылей
-      const typeKey = piece.constructor.name;   // "QueenBee", "Beetle" и т.д.
-      const img = loadPieceImage(typeKey, piece.owner); // "QueenBee_White"
+      // Map piece.type to the asset key format
+      let typeKey: string;
+      switch (piece.type) {
+        case "bee": typeKey = "QueenBee"; break;
+        case "ant": typeKey = "SoldierAnt"; break;
+        case "hopper": typeKey = "Grasshopper"; break;
+        case "spider": typeKey = "Spider"; break;
+        case "beetle": typeKey = "Beetle"; break;
+        default: typeKey = piece.type; break;
+      }
+      
+      console.log(`🎯 Drawing piece: type=${piece.type} -> typeKey=${typeKey}, owner=${piece.owner}, position=(${q},${r})`);
+      
+      const img = loadPieceImage(typeKey, piece.owner);
 
       if (img.complete && img.naturalWidth !== 0) {
+        console.log(`✅ Drawing loaded image for ${typeKey}_${piece.owner}`);
         this.ctx.drawImage(img, x - size * 0.9, y - size * 0.9, size * 1.8, size * 1.8);
       } else {
+        console.log(`⏳ Waiting for image to load: ${typeKey}_${piece.owner}`);
         img.onload = () => {
+          console.log(`🔄 Image loaded, redrawing ${typeKey}_${piece.owner}`);
           this.ctx.drawImage(img, x - size * 0.9, y - size * 0.9, size * 1.8, size * 1.8);
         };
       }
