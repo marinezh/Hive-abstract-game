@@ -1,45 +1,70 @@
-import bee_white from "../assets/bee_white.png";
-import bee_black from "../assets/bee_black.png";
+import QueenBee_white from "../assets/QueenBee_white.png";
+import QueenBee_black from "../assets/QueenBee_black.png";
 
-import ant_white from "../assets/ant_white.png";
-import ant_black from "../assets/ant_black.png";
+import Ant_white from "../assets/Ant_white.png";
+import Ant_black from "../assets/Ant_black.png";
 
-import beetle_white from "../assets/beetle_white.png";
-import beetle_black from "../assets/beetle_black.png";
+import Beetle_white from "../assets/Beetle_white.png";
+import Beetle_black from "../assets/Beetle_black.png";
 
-import hopper_white from "../assets/hopper_white.png";
-import hopper_black from "../assets/hopper_black.png";
+import Grasshopper_white from "../assets/Grasshopper_white.png";
+import Grasshopper_black from "../assets/Grasshopper_black.png";
 
-import spider_white from "../assets/spider_white.png";
-import spider_black from "../assets/spider_black.png";
+import Spider_white from "../assets/Spider_white.png";
+import Spider_black from "../assets/Spider_black.png";
+
 
 import { Board } from '../models/Board';
 import { Piece } from '../models/Piece';
 
 const piecePaths: Record<string, string> = {
-  "bee_white": bee_white,
-  "bee_black": bee_black,
-  "ant_white": ant_white,
-  "ant_black": ant_black,
-  "beetle_white": beetle_white,
-  "beetle_black": beetle_black,
-  "hopper_white": hopper_white,
-  "hopper_black": hopper_black,
-  "spider_white": spider_white,
-  "spider_black": spider_black,
+  "QueenBee_white": QueenBee_white,
+  "QueenBee_black": QueenBee_black,
+  "Ant_white": Ant_white,
+  "Ant_black": Ant_black,
+  "Beetle_white": Beetle_white,
+  "Beetle_black": Beetle_black,
+  "Grasshopper_white": Grasshopper_white,
+  "Grasshopper_black": Grasshopper_black,
+  "Spider_white": Spider_white,
+  "Spider_black": Spider_black,
 };
+console.log("piecePaths", piecePaths);
 
 const pieceImages: Record<string, HTMLImageElement> = {};
 
 export function loadPieceImage(type: string, color: string): HTMLImageElement {
-  const key = `${type}_${color.toLowerCase()}`;
+const key = `${type}_${color.toLowerCase()}`;
+
+  if (!piecePaths[key]) {
+    console.error(
+      "❌ Missing asset for key:", key,
+      "\nType:", type,
+      "\nColor:", color,
+      "\nAvailable keys:", Object.keys(piecePaths)
+    );
+    return new Image();
+  }
+
   if (!pieceImages[key]) {
     const img = new Image();
-    img.src = piecePaths[key];  // ✅ correct vite path
+    img.src = piecePaths[key];
+
+    img.onload = () => {
+      console.log("✅ Loaded image:", key, "→", img.src);
+    };
+
+    img.onerror = () => {
+      console.error("🚨 Failed to load image:", key, "→", img.src);
+    };
+
     pieceImages[key] = img;
   }
+
   return pieceImages[key];
 }
+
+
 
 export class CanvasRenderer {
   public ctx: CanvasRenderingContext2D;
@@ -142,42 +167,20 @@ export class CanvasRenderer {
   }
 
     drawPiece(piece: Piece) {
-    const { q, r } = piece.position;
-    const { x, y } = this.hexToPixel(q, r);
-    const size = this.size;
+      const { q, r } = piece.position;
+      const { x, y } = this.hexToPixel(q, r);
+      const size = this.size;
 
-    // normalize typeKey
-    let typeKey = piece.constructor.name.toLowerCase();
-    if (typeKey.includes("queen")) typeKey = "bee";
-    else if (typeKey.includes("beetle")) typeKey = "beetle";
-    else if (typeKey.includes("spider")) typeKey = "spider";
-    else if (typeKey.includes("grass")) typeKey = "hopper";
-    else if (typeKey.includes("ant")) typeKey = "ant";
+      // Теперь без костылей
+      const typeKey = piece.constructor.name;   // "QueenBee", "Beetle" и т.д.
+      const img = loadPieceImage(typeKey, piece.owner); // "QueenBee_White"
 
-    // load image
-    const img = loadPieceImage(typeKey, piece.owner);
-
-    // ✅ если картинка загружена — рисуем
-    if (img.complete && img.naturalWidth !== 0) {
-      this.ctx.drawImage(
-        img,
-        x - size * 0.9,
-        y - size * 0.9,
-        size * 1.8,
-        size * 1.8
-      );
-    } else {
-      // ✅ если ещё грузится — вешаем обработчик
-      img.onload = () => {
-        this.ctx.drawImage(
-          img,
-          x - size * 0.9,
-          y - size * 0.9,
-          size * 1.8,
-          size * 1.8
-        );
-      };
+      if (img.complete && img.naturalWidth !== 0) {
+        this.ctx.drawImage(img, x - size * 0.9, y - size * 0.9, size * 1.8, size * 1.8);
+      } else {
+        img.onload = () => {
+          this.ctx.drawImage(img, x - size * 0.9, y - size * 0.9, size * 1.8, size * 1.8);
+        };
+      }
     }
-}
-
 }
