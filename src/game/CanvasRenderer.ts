@@ -1,15 +1,41 @@
 // CanvasRenderer.ts
 import { Board } from '../models/Board';
 import { Piece } from '../models/Piece';
+import bee_white from "../assets/bee_white.png";
+import bee_black from "../assets/bee_black.png";
+import ant_white from "../assets/ant_white.png";
+import ant_black from "../assets/ant_black.png";
+import beetle_white from "../assets/bee_white.png";
+import beetle_black from "../assets/bee_black.png";
+import hopper_white from "../assets/hopper_white.png";
+import hopper_black from "../assets/hopper_black.png";
+import spider_white from "../assets/spider_white.png";
+import spider_black from "../assets/spider_black.png";
+
 
 // 🔹 Global cache for piece images
+
+const piecePaths: Record<string, string> = {
+  bee_white,
+  bee_black,
+  ant_white,
+  ant_black,
+  beetle_white,
+  beetle_black,
+  hopper_white,
+  hopper_black,
+  spider_white,
+  spider_black
+  // add the rest
+};
+
 const pieceImages: Record<string, HTMLImageElement> = {};
 
 export function loadPieceImage(type: string, color: string): HTMLImageElement {
-  const key = `${type}_${color}`;
+  const key = `${type}_${color.toLowerCase()}`; // e.g. "bee_white"
   if (!pieceImages[key]) {
     const img = new Image();
-    img.src = `./src/assets/${type}_${color.toLowerCase()}.png`;
+    img.src = piecePaths[key];  // ✅ use Vite-generated path
     pieceImages[key] = img;
   }
   return pieceImages[key];
