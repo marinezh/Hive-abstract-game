@@ -1,33 +1,17 @@
-import QueenBee_white from "../assets/QueenBee_white.png";
-import QueenBee_black from "../assets/QueenBee_black.png";
-
-import SoldierAnt_white from "../assets/SoldierAnt_white.png";
-import SoldierAnt_black from "../assets/SoldierAnt_black.png";
-
-import Beetle_white from "../assets/beetle_white.png";
-import Beetle_black from "../assets/beetle_black.png";
-
-import Grasshopper_white from "../assets/Grasshopper_white.png";
-import Grasshopper_black from "../assets/Grasshopper_black.png";
-
-import Spider_white from "../assets/spider_white.png";
-import Spider_black from "../assets/spider_black.png";
-
-
 import { Board } from '../models/Board';
 import { Piece } from '../models/Piece';
 
 const piecePaths: Record<string, string> = {
-  "QueenBee_white": QueenBee_white,
-  "QueenBee_black": QueenBee_black,
-  "SoldierAnt_white": SoldierAnt_white,
-  "SoldierAnt_black": SoldierAnt_black,
-  "Beetle_white": Beetle_white,
-  "Beetle_black": Beetle_black,
-  "Grasshopper_white": Grasshopper_white,
-  "Grasshopper_black": Grasshopper_black,
-  "Spider_white": Spider_white,
-  "Spider_black": Spider_black,
+  "QueenBee_white": "/assets/QueenBee_white.png",
+  "QueenBee_black": "/assets/QueenBee_black.png",
+  "SoldierAnt_white": "/assets/SoldierAnt_white.png",
+  "SoldierAnt_black": "/assets/SoldierAnt_black.png",
+  "Beetle_white": "/assets/Beetle_white.png",
+  "Beetle_black": "/assets/Beetle_black.png",
+  "Grasshopper_white": "/assets/Grasshopper_white.png",
+  "Grasshopper_black": "/assets/Grasshopper_black.png",
+  "Spider_white": "/assets/Spider_white.png",
+  "Spider_black": "/assets/Spider_black.png",
 };
 console.log("piecePaths", piecePaths);
 

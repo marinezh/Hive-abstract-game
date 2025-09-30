@@ -1,5 +1,7 @@
 import type { Player } from '../models/Piece';
 
+import { loadPieceImage } from './CanvasRenderer';
+
 export type BankPiece = {
   id: string;
   x: number;
@@ -10,22 +12,30 @@ export type BankPiece = {
   height: number;
 };
 
-const pieceImages: Record<string, HTMLImageElement> = {};
-
-export function loadPieceImage(type: BankPiece["type"], color: Player): HTMLImageElement {
-  const key = `${type}_${color}`;
-  if (!pieceImages[key]) {
-    const img = new Image();
-    img.src = `./src/assets/${type}_${color.toLowerCase()}.png`;
-    pieceImages[key] = img;
-  }
-  return pieceImages[key];
-}
-
 export function drawPieceBanks(bankPieces: BankPiece[], ctx: CanvasRenderingContext2D) {
   bankPieces.forEach(piece => {
-    const img = loadPieceImage(piece.type, piece.color);
-    ctx.drawImage(img, piece.x, piece.y, piece.width, piece.height);
+    // Map bank piece types to the actual constructor names used in CanvasRenderer
+    let typeKey: string = piece.type;
+    if (piece.type === "bee") typeKey = "QueenBee";
+    if (piece.type === "ant") typeKey = "SoldierAnt";
+    if (piece.type === "hopper") typeKey = "Grasshopper";
+    if (piece.type === "spider") typeKey = "Spider";
+    if (piece.type === "beetle") typeKey = "Beetle";
+    
+    const img = loadPieceImage(typeKey, piece.color);
+    
+    // Check if image is loaded before drawing
+    if (img.complete && img.naturalWidth !== 0) {
+      ctx.drawImage(img, piece.x, piece.y, piece.width, piece.height);
+    } else {
+      // Wait for image to load, then redraw
+      img.onload = () => {
+        ctx.drawImage(img, piece.x, piece.y, piece.width, piece.height);
+      };
+      img.onerror = () => {
+        console.error(`Failed to load image: ${img.src} for piece type: ${piece.type}, color: ${piece.color}`);
+      };
+    }
   });
 }
 
