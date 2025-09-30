@@ -1,5 +1,4 @@
 import './style.css';
-//import { showPopup } from "./popup";
 import "./popup";
 import { Game } from './game/Game';
 import { drawPieceBanks, layoutBankPositions } from './game/PieceBank';
@@ -10,9 +9,6 @@ import { createPiece } from './models/createPiece';
 import { CanvasRenderer, loadPieceImage } from './game/CanvasRenderer';
 import {showWinnerPopup} from './popup'
 import type { Piece, Player } from './models/Piece';
-
-
-
 
 let validMoves: { q: number; r: number }[] = [];
 let mousePos = { x: 0, y: 0 };
@@ -78,8 +74,8 @@ let hoveredHex: { q: number, r: number } | null = null;
 // ---- CLICK HANDLER ----
 canvas.addEventListener('click', (e) => {
   const { x: clickX, y: clickY } = getMousePos(e, canvas);
-  const centerX = canvas.width / (2 * dpr);
-  const centerY = canvas.height / (2 * dpr);
+  const centerX = canvas.width / dpr / 2;  // Match CanvasRenderer.hexToPixel
+  const centerY = canvas.height / dpr / 2; // Match CanvasRenderer.hexToPixel
 	// const rect = canvas.getBoundingClientRect();
 	// const clickX = e.clientX - rect.left;
 	// const clickY = e.clientY - rect.top;
@@ -122,14 +118,8 @@ canvas.addEventListener('click', (e) => {
     const target = pixelToHex(clickX - centerX, clickY - centerY, HEX_SIZE); /// PLACE of insert
 
     if (sel.from === "bank") {                   /// BANK
-      console.log(`🔄 Attempting to place piece: type=${sel.type}, color=${sel.color}, target=`, target);
       const pieceObj = createPiece(sel.type, sel.color, target);
-      console.log(`🎯 Created piece:`, pieceObj);
-      
       if (pieceObj && game.placePiece(pieceObj, target)) {
-        console.log(`✅ Piece placed successfully at (${target.q}, ${target.r})`);
-        console.log(`📊 Board now has ${game.board.pieces.length} pieces`);
-        
         // remove from bank + reflow
         const idx = bankPieces.findIndex(p => p.id === sel.bankId);
         if (idx !== -1) {
@@ -137,9 +127,6 @@ canvas.addEventListener('click', (e) => {
           layoutBankPositions(bankPieces, canvas.width, dpr, pieceSize);
         }
           game.nextTurn(); 
-      } else {
-        console.log(`❌ Failed to place piece at (${target.q}, ${target.r})`);
-        if (!pieceObj) console.log(`❌ Piece creation failed`);
       }
     } else if (sel.from === "board") {            /// BOARD
       if (game.movePiece(sel.ref, target)) {
@@ -168,8 +155,8 @@ canvas.addEventListener('click', (e) => {
 canvas.addEventListener('mousemove', (e) => {
   mousePos = getMousePos(e, canvas);
   const { x: mouseX, y: mouseY } = getMousePos(e, canvas);
-  const centerX = canvas.width / (2 * dpr);
-  const centerY = canvas.height / (2 * dpr);
+  const centerX = canvas.width / dpr / 2;  // Match CanvasRenderer.hexToPixel
+  const centerY = canvas.height / dpr / 2; // Match CanvasRenderer.hexToPixel
 	// const rect = canvas.getBoundingClientRect();
 	// const mouseX = e.clientX - rect.left;
 	// const mouseY = e.clientY - rect.top;
@@ -225,7 +212,6 @@ function getMousePos(evt: MouseEvent, canvas: HTMLCanvasElement) {
 ////////////////////////////////////////////////////////////////////////////////
 
 function renderCanvasBoard() {
-  console.log(`🎨 Rendering board with ${game.board.pieces.length} pieces`);
   renderer.clear();
 
   // ---- Valid Moves ----

@@ -45,12 +45,19 @@ export class Game {
    */
   placePiece(piece: Piece, coord: { q: number; r: number }): boolean {
     // destination must be empty
-    console.log("placePiece", coord.q, coord.r);
+    console.log("placePiece", coord.q, coord.r, "piece type:", piece.type, "player:", piece.owner);
 
-    if (piece.owner !== this.currentPlayer) return false;
-    if (!this.board.isEmpty(coord)) return false;
+    if (piece.owner !== this.currentPlayer) {
+      console.log("❌ Wrong player");
+      return false;
+    }
+    if (!this.board.isEmpty(coord)) {
+      console.log("❌ Position not empty");
+      return false;
+    }
 
     if (this.board.pieces.length === 0) {
+      console.log("✅ First piece placement");
       this.board.addPiece(piece, coord);
       return true;
     }
@@ -62,21 +69,31 @@ export class Game {
       const piece = this.board.pieces.find(p => p.position.q === n.q && p.position.r === n.r);
       if (!piece) continue;
       if (piece.owner === this.currentPlayer) touchesOwn = true;
-      else return false;
+      else {
+        console.log("❌ Touches enemy piece");
+        return false;
+      }
     }
 
-    if (this.board.pieces.length > 1 && !touchesOwn) return false;
+    if (this.board.pieces.length > 1 && !touchesOwn) {
+      console.log("❌ Doesn't touch own pieces");
+      return false;
+    }
 
     // queen-bee rule: each player must place queen by their 4th turn
     const samePlayerPieces = this.board.pieces.filter(
       p => p.owner === piece.owner
     );
-    const hasQueen = samePlayerPieces.some(p => p.constructor.name === "QueenBee");
-    if (!hasQueen && samePlayerPieces.length >= 3 && piece.constructor.name !== "QueenBee") {
+    const hasQueen = samePlayerPieces.some(p => p.type === "bee");
+    console.log(`🐝 Player ${piece.owner} has ${samePlayerPieces.length} pieces, hasQueen: ${hasQueen}, placing: ${piece.type}`);
+    
+    if (!hasQueen && samePlayerPieces.length >= 3 && piece.type !== "bee") {
+      console.log("❌ Must place Queen Bee by 4th turn!");
       return false;
     }
 
     // all checks passed: add to board
+    console.log("✅ Piece placed successfully");
     this.board.addPiece(piece, coord);
     this.board.updateStackLevelsAt(coord);
     return true;
@@ -125,7 +142,7 @@ export class Game {
   }
 
   checkWin(): Player | null {
-    const queens = this.board.pieces.filter(p => p.constructor.name === "QueenBee");
+    const queens = this.board.pieces.filter(p => p.type === "bee");
     for (const q of queens) {
       const neighbors = this.board.neighbors(q.position);
       const surrounded = neighbors.every(n => !this.board.isEmpty(n));
