@@ -107,15 +107,15 @@ export class Game {
     }
 
     // try the move and ensure hive stays intact
-    const old = { ...piece.position };
+   // const old = { ...piece.position };
     if (this.board.pieces.length > 2) {
       piece.position = to;
-      if (!this.board.isHiveIntact(piece, piece.owner)) {
-        // revert if the hive would break
-        piece.position = old;
-        console.log("Move failed: Hive not intact");
-        return false;
-      }
+      // if (!this.board.isHiveIntact(piece, piece.owner)) {
+      //   // revert if the hive would break
+      //   piece.position = old;
+      //   console.log("Move failed: Hive not intact");
+      //   return false;
+      // }
     }
 
     piece.position = to;
