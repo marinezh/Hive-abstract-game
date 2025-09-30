@@ -1,8 +1,8 @@
 import QueenBee_white from "../assets/QueenBee_white.png";
 import QueenBee_black from "../assets/QueenBee_black.png";
 
-import Ant_white from "../assets/Ant_white.png";
-import Ant_black from "../assets/Ant_black.png";
+import SoldierAnt_white from "../assets/SoldierAnt_white.png";
+import SoldierAnt_black from "../assets/SoldierAnt_black.png";
 
 import Beetle_white from "../assets/Beetle_white.png";
 import Beetle_black from "../assets/Beetle_black.png";
@@ -20,8 +20,8 @@ import { Piece } from '../models/Piece';
 const piecePaths: Record<string, string> = {
   "QueenBee_white": QueenBee_white,
   "QueenBee_black": QueenBee_black,
-  "SoldierAnt_white": Ant_white,
-  "SoldierAnt_black": Ant_black,
+  "SoldierAnt_white": SoldierAnt_white,
+  "SoldierAnt_black": SoldierAnt_black,
   "Beetle_white": Beetle_white,
   "Beetle_black": Beetle_black,
   "Grasshopper_white": Grasshopper_white,
