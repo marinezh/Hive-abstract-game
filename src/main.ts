@@ -189,24 +189,63 @@ canvas.addEventListener('mouseleave', () => {
 /////////////////////////////////////////////////////
 // HELPERS
 
-function drawHighlightedHexes(ctx: CanvasRenderingContext2D, hexes: {q:number,r:number}[], renderer: CanvasRenderer) {
-  ctx.save();
-  ctx.fillStyle = 'rgba(0, 200, 0, 0.3)'; 
-  hexes.forEach(h => {
-    const { x, y } = renderer.hexToPixel(h.q, h.r);
-    ctx.beginPath();
-    for (let i = 0; i < 6; i++) {
-      const angle = Math.PI / 180 * (60 * i - 30);
-      const px = x + HEX_SIZE * Math.cos(angle);
-      const py = y + HEX_SIZE * Math.sin(angle);
-      if (i === 0) ctx.moveTo(px, py);
-      else ctx.lineTo(px, py);
-    }
-    ctx.closePath();
-    ctx.fill();
-  });
-  ctx.restore();
-}
+// function drawHighlightedHexes(ctx: CanvasRenderingContext2D, hexes: {q:number,r:number}[], renderer: CanvasRenderer) {
+//   ctx.save();
+//   ctx.fillStyle = 'rgba(0, 200, 0, 0.3)'; 
+//   hexes.forEach(h => {
+//     const { x, y } = renderer.hexToPixel(h.q, h.r);
+//     ctx.beginPath();
+//     for (let i = 0; i < 6; i++) {
+//       const angle = Math.PI / 180 * (60 * i - 30);
+//       const px = x + HEX_SIZE * Math.cos(angle);
+//       const py = y + HEX_SIZE * Math.sin(angle);
+//       if (i === 0) ctx.moveTo(px, py);
+//       else ctx.lineTo(px, py);
+//     }
+//     ctx.closePath();
+//     ctx.fill();
+//   });
+//   ctx.restore();
+// }
+
+  function drawHighlightedHexes(
+    ctx: CanvasRenderingContext2D, 
+    hexes: { q: number, r: number }[], 
+    renderer: CanvasRenderer
+  ) {
+    ctx.save();
+    ctx.fillStyle = 'rgba(0, 200, 0, 0.3)';
+
+    // Deduplicate hexes using a Set
+    const uniqueHexKeys = new Set<string>();
+    const uniqueHexes: { q: number, r: number }[] = [];
+
+    hexes.forEach(h => {
+      const key = `${h.q},${h.r}`;
+      if (!uniqueHexKeys.has(key)) {
+        uniqueHexKeys.add(key);
+        uniqueHexes.push(h);
+      }
+    });
+
+    // Draw each unique hex
+    uniqueHexes.forEach(h => {
+      const { x, y } = renderer.hexToPixel(h.q, h.r);
+      ctx.beginPath();
+      for (let i = 0; i < 6; i++) {
+        const angle = Math.PI / 180 * (60 * i - 30);
+        const px = x + HEX_SIZE * Math.cos(angle);
+        const py = y + HEX_SIZE * Math.sin(angle);
+        if (i === 0) ctx.moveTo(px, py);
+        else ctx.lineTo(px, py);
+      }
+      ctx.closePath();
+      ctx.fill();
+    });
+
+    ctx.restore();
+  }
+
 
 function getMousePos(evt: MouseEvent, canvas: HTMLCanvasElement) {
   const rect = canvas.getBoundingClientRect();
