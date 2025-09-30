@@ -2,16 +2,16 @@ import { Board } from '../models/Board';
 import { Piece } from '../models/Piece';
 
 const piecePaths: Record<string, string> = {
-  "QueenBee_white": "/assets/QueenBee_white.png",
-  "QueenBee_black": "/assets/QueenBee_black.png",
-  "SoldierAnt_white": "/assets/SoldierAnt_white.png",
-  "SoldierAnt_black": "/assets/SoldierAnt_black.png",
-  "Beetle_white": "/assets/Beetle_white.png",
-  "Beetle_black": "/assets/Beetle_black.png",
-  "Grasshopper_white": "/assets/Grasshopper_white.png",
-  "Grasshopper_black": "/assets/Grasshopper_black.png",
-  "Spider_white": "/assets/Spider_white.png",
-  "Spider_black": "/assets/Spider_black.png",
+  "QueenBee_white": "./assets/QueenBee_white.png",
+  "QueenBee_black": "./assets/QueenBee_black.png",
+  "SoldierAnt_white": "./assets/SoldierAnt_white.png",
+  "SoldierAnt_black": "./assets/SoldierAnt_black.png",
+  "Beetle_white": "./assets/Beetle_white.png",
+  "Beetle_black": "./assets/Beetle_black.png",
+  "Grasshopper_white": "./assets/Grasshopper_white.png",
+  "Grasshopper_black": "./assets/Grasshopper_black.png",
+  "Spider_white": "./assets/Spider_white.png",
+  "Spider_black": "./assets/Spider_black.png",
 };
 console.log("piecePaths", piecePaths);
 
