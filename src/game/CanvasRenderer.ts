@@ -1,13 +1,18 @@
 import bee_white from "../assets/bee_white.png";
 import bee_black from "../assets/bee_black.png";
+
 import ant_white from "../assets/ant_white.png";
 import ant_black from "../assets/ant_black.png";
-import beetle_white from "../assets/bee_white.png";
-import beetle_black from "../assets/bee_black.png";
+
+import beetle_white from "../assets/beetle_white.png";
+import beetle_black from "../assets/beetle_black.png";
+
 import hopper_white from "../assets/hopper_white.png";
 import hopper_black from "../assets/hopper_black.png";
+
 import spider_white from "../assets/spider_white.png";
 import spider_black from "../assets/spider_black.png";
+
 import { Board } from '../models/Board';
 import { Piece } from '../models/Piece';
 
