@@ -1,13 +1,10 @@
 import { Board } from "../models/Board";
 import { Piece } from "../models/Piece";
 import type { Player } from "../models/Piece";
-
 import { showWinnerPopup } from "../popup";
 
 // When you detect a win:
 showWinnerPopup("White"); // or showWinnerPopup("Black");
-
-
 
 /**
  * Game: manages game state and main rules.
@@ -58,16 +55,17 @@ export class Game {
       return true;
     }
   
+    const neighbors = this.board.neighbors(coord);
+    let touchesOwn = false;
 
-    if (this.board.pieces.length === 1) {
-      // black’s first move cannot touch opponent’s piece
-      const neighbors = this.board.neighbors(coord);
-      if (neighbors.some(n => !this.board.isEmpty(n))) return false;
-    } else if (this.board.pieces.length > 1) {
-      // other moves must touch hive
-      const neighbors = this.board.neighbors(coord);
-      if (!neighbors.some(n => !this.board.isEmpty(n))) return false;
+    for (const n of neighbors) {
+      const piece = this.board.pieces.find(p => p.position.q === n.q && p.position.r === n.r);
+      if (!piece) continue;
+      if (piece.owner === this.currentPlayer) touchesOwn = true;
+      else return false;
     }
+
+    if (this.board.pieces.length > 1 && !touchesOwn) return false;
 
     // queen-bee rule: each player must place queen by their 4th turn
     const samePlayerPieces = this.board.pieces.filter(
@@ -107,7 +105,6 @@ export class Game {
       console.log("Attempted move to:", to);
     return false;
     }
-
 
     // try the move and ensure hive stays intact
     const old = { ...piece.position };
