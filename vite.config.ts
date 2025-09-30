@@ -1,5 +1,8 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from "vite";
 
 export default defineConfig({
-  base: '/Hive-abstract-game/',  
-})
+  base: process.env.NODE_ENV === "production"
+    ? "/Hive-abstract-game/"
+    : "/",
+});
+

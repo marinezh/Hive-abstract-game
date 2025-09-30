@@ -141,7 +141,7 @@ export class CanvasRenderer {
     this.ctx.fill();
   }
 
-  drawPiece(piece: Piece) {
+    drawPiece(piece: Piece) {
     const { q, r } = piece.position;
     const { x, y } = this.hexToPixel(q, r);
     const size = this.size;
@@ -154,15 +154,30 @@ export class CanvasRenderer {
     else if (typeKey.includes("grass")) typeKey = "hopper";
     else if (typeKey.includes("ant")) typeKey = "ant";
 
-    // 🔹 load from cache
+    // load image
     const img = loadPieceImage(typeKey, piece.owner);
 
-    this.ctx.drawImage(
-      img,
-      x - size * 0.9,
-      y - size * 0.9,
-      size * 1.8,
-      size * 1.8
-    );
-  }
+    // ✅ если картинка загружена — рисуем
+    if (img.complete && img.naturalWidth !== 0) {
+      this.ctx.drawImage(
+        img,
+        x - size * 0.9,
+        y - size * 0.9,
+        size * 1.8,
+        size * 1.8
+      );
+    } else {
+      // ✅ если ещё грузится — вешаем обработчик
+      img.onload = () => {
+        this.ctx.drawImage(
+          img,
+          x - size * 0.9,
+          y - size * 0.9,
+          size * 1.8,
+          size * 1.8
+        );
+      };
+    }
+}
+
 }
