@@ -17,16 +17,16 @@ import { Board } from '../models/Board';
 import { Piece } from '../models/Piece';
 
 const piecePaths: Record<string, string> = {
-  bee_white,
-  bee_black,
-  ant_white,
-  ant_black,
-  beetle_white,
-  beetle_black,
-  hopper_white,
-  hopper_black,
-  spider_white,
-  spider_black
+  "bee_white": bee_white,
+  "bee_black": bee_black,
+  "ant_white": ant_white,
+  "ant_black": ant_black,
+  "beetle_white": beetle_white,
+  "beetle_black": beetle_black,
+  "hopper_white": hopper_white,
+  "hopper_black": hopper_black,
+  "spider_white": spider_white,
+  "spider_black": spider_black,
 };
 
 const pieceImages: Record<string, HTMLImageElement> = {};
