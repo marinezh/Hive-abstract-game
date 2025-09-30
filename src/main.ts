@@ -5,10 +5,14 @@ import { Game } from './game/Game';
 import { drawPieceBanks, layoutBankPositions } from './game/PieceBank';
 import type { BankPiece } from './game/PieceBank';
 import { pixelToHex } from './game/hexUtils';
+import { isTopPiece } from './models/utils';
 import { createPiece } from './models/createPiece';
 import { CanvasRenderer, loadPieceImage } from './game/CanvasRenderer';
 import {showWinnerPopup} from './popup'
 import type { Piece, Player } from './models/Piece';
+
+
+
 
 let validMoves: { q: number; r: number }[] = [];
 let mousePos = { x: 0, y: 0 };
@@ -97,22 +101,22 @@ canvas.addEventListener('click', (e) => {
     }
 
 	// 2) BOARD PIECE HIT-TEST
-
     const hex = pixelToHex(clickX - centerX, clickY - centerY, HEX_SIZE);
     for (let i = game.board.pieces.length - 1; i >= 0; i--) {
       const p = game.board.pieces[i];
-      if (p.position.q === hex.q && p.position.r === hex.r && p.owner === game.currentPlayer) {
-        console.log('Click hex:', hex);                 /// LOG
+      if (p.position.q === hex.q && p.position.r === hex.r && p.owner === game.currentPlayer && isTopPiece(p, game.board)) {
         selected = { from: "board", ref: p };
         validMoves = p.legalMoves(game.board);
         console.log('Selected from board:', selected);  /// LOG
+        console.log('Stack level:', selected.ref.stackLevel);
+        console.log('Type:', selected.ref.type);
+
         return;
       }
     }
   }
 
   // Move or Place
-
   if (selected) {
     const sel = selected;
     const target = pixelToHex(clickX - centerX, clickY - centerY, HEX_SIZE); /// PLACE of insert
@@ -137,6 +141,7 @@ canvas.addEventListener('click', (e) => {
       }
     }
     selected = null;
+    validMoves = [];
     renderCanvasBoard();
     document.getElementById('game-status')!.textContent = `Next move: ${game.currentPlayer}`;
 
@@ -184,24 +189,24 @@ canvas.addEventListener('mouseleave', () => {
 /////////////////////////////////////////////////////
 // HELPERS
 
-// function drawHighlightedHexes(ctx: CanvasRenderingContext2D, hexes: {q:number,r:number}[], renderer: CanvasRenderer) {
-//   ctx.save();
-//   ctx.fillStyle = 'rgba(0, 200, 0, 0.3)'; 
-//   hexes.forEach(h => {
-//     const { x, y } = renderer.hexToPixel(h.q, h.r);
-//     ctx.beginPath();
-//     for (let i = 0; i < 6; i++) {
-//       const angle = Math.PI / 180 * (60 * i - 30);
-//       const px = x + HEX_SIZE * Math.cos(angle);
-//       const py = y + HEX_SIZE * Math.sin(angle);
-//       if (i === 0) ctx.moveTo(px, py);
-//       else ctx.lineTo(px, py);
-//     }
-//     ctx.closePath();
-//     ctx.fill();
-//   });
-//   ctx.restore();
-// }
+function drawHighlightedHexes(ctx: CanvasRenderingContext2D, hexes: {q:number,r:number}[], renderer: CanvasRenderer) {
+  ctx.save();
+  ctx.fillStyle = 'rgba(0, 200, 0, 0.3)'; 
+  hexes.forEach(h => {
+    const { x, y } = renderer.hexToPixel(h.q, h.r);
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const angle = Math.PI / 180 * (60 * i - 30);
+      const px = x + HEX_SIZE * Math.cos(angle);
+      const py = y + HEX_SIZE * Math.sin(angle);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+  });
+  ctx.restore();
+}
 
 function getMousePos(evt: MouseEvent, canvas: HTMLCanvasElement) {
   const rect = canvas.getBoundingClientRect();
@@ -214,10 +219,6 @@ function renderCanvasBoard() {
   renderer.clear();
 
   // ---- Valid Moves ----
-  // if (validMoves.length > 0) {
-  //   drawHighlightedHexes(renderer.ctx, validMoves, renderer);
-  // }
-
   drawPieceBanks(bankPieces, renderer.ctx);
 
   renderer.drawBoard(game.board, hoveredHex);
@@ -235,6 +236,9 @@ function renderCanvasBoard() {
     const owner = selected.ref.owner; // "White" or "Black"
     const img = loadPieceImage(type, owner);
     ctx.drawImage(img, mousePos.x - HEX_SIZE, mousePos.y - HEX_SIZE, HEX_SIZE * 2, HEX_SIZE * 2);
+  }
+  if (validMoves.length > 0) {
+    drawHighlightedHexes(renderer.ctx, validMoves, renderer);
   }
 }
 

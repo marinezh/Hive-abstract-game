@@ -1,38 +1,30 @@
-// const overlay = document.getElementById("popup-overlay") as HTMLDivElement;
-// const closeBtn = document.getElementById("close-popup") as HTMLSpanElement;
-// const message = document.getElementById("popup-message") as HTMLHeadingElement;
-// const showBtn = document.getElementById("show-popup") as HTMLButtonElement;
+const popupRules = document.querySelector("#popup-rules") as HTMLDivElement;
+const closeRules = document.querySelector("#close-rules") as HTMLSpanElement;
+const showRules = document.querySelector("#show-rules") as HTMLButtonElement;
 
-// // Show popup with custom text
-// export function showPopup(text: string) {
-//   message.textContent = text;
-//   overlay.classList.remove("hidden");
-// }
+// Show popup
+if (showRules) {
+  showRules.addEventListener("click", () => {
+    popupRules.classList.remove("hidden");
+  });
+}
 
-// // Hide popup
-// function hidePopup() {
-//   overlay.classList.add("hidden");
-// }
+// Hide popup when X clicked
+if (closeRules) {
+  closeRules.addEventListener("click", () => {
+    popupRules.classList.add("hidden");
+  });
+}
 
-// // Close when X is clicked
-// if (closeBtn) {
-//   closeBtn.addEventListener("click", () => {
-//     console.log("clicked X!");
-//     hidePopup();
-//   });
-// }
+// Hide popup when clicking outside content
+if (popupRules) {
+  popupRules.addEventListener("click", (e) => {
+    if (e.target === popupRules) {
+      popupRules.classList.add("hidden");
+    }
+  });
+}
 
-// // ✅ Correct: "click" not "close-popup"
-// if (overlay) {
-//   overlay.addEventListener("click", (e) => {
-//     if (e.target === overlay) hidePopup();
-//   });
-// }
-
-// // Temporary test button
-// if (showBtn) {
-//   showBtn.addEventListener("click", () => showPopup("White wins!"));
-// }
 window.addEventListener("DOMContentLoaded", () => {
   let overlay = document.getElementById("popup-overlay");
   if (overlay) {
@@ -50,24 +42,24 @@ export function showWinnerPopup(winner: "White" | "Black") {
     overlay.className = "hidden";
     document.body.appendChild(overlay);
   }
- overlay.classList.remove("hidden");
+  overlay.classList.remove("hidden");
 
   // Create the popup box
   overlay.innerHTML = `
     <div class="popup">
-      <h2>${winner} won!</h2>
+      <h2>${winner} wins!</h2>
       <span id="close-popup">&times;</span>
     </div>
   `;
 
-  // Close logic
-  const closeBtn = document.getElementById("close-popup");
-  if (closeBtn) {
-    closeBtn.onclick = () => {
-      overlay?.classList.add("hidden");
+  // Attach close handler using event delegation
+  overlay.onclick = (e) => {
+    const target = e.target as HTMLElement;
+    if (target && target.id === "close-popup") {
+      overlay.classList.add("hidden");
       window.location.reload(); // Reloads the page and starts a new game
-    };
-  }
+    }
+  };
 }
 
 // Optionally, you can add a function to hide the popup

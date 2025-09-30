@@ -12,8 +12,20 @@ import type { Board } from "./Board";
  */
 export class QueenBee extends Piece {
   readonly type = "bee";
+
   legalMoves(board: Board): HexCoord[] {
-    return board.neighbors(this.position)
-                .filter(c => canSlide(board, this.position, c));
+    const currentPos = this.position;
+    const neighborHexes = board.neighbors(currentPos);
+
+    const legalMoves: HexCoord[] = [];
+
+    for (const hex of neighborHexes) {
+      const canMove = canSlide(board, currentPos, hex);
+      if (canMove) {
+        legalMoves.push(hex);
+      }
+    }
+
+    return legalMoves;
   }
 }

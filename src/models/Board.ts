@@ -2,7 +2,6 @@ import type { HexCoord, Piece } from "./Piece";
 
 export class Board {
   pieces: Piece[] = [];
-
   // Add piece to board
   addPiece(piece: Piece, coord: HexCoord): void {
     // update the piece’s internal position first
@@ -30,18 +29,21 @@ export class Board {
   }
 
   // Check if moving a piece would break the hive
-  isHiveIntact(from: HexCoord): boolean {
-    // Simple rule: if there’s 1 or 0 pieces, hive is intact
+  isHiveIntact(movingPiece: Piece, ownerToCheck: string): boolean {
     if (this.pieces.length <= 1) return true;
 
-    // Build a set of all positions except `from`
+    // Build a set of all positions except the moving piece
+    // Exclude beetles that are not at the bottom of their stack
     const remaining = this.pieces
-      .filter(p => p.position.q !== from.q || p.position.r !== from.r)
+      .filter(p => 
+        p !== movingPiece &&
+        p.owner === ownerToCheck &&
+        !(p.type === 'beetle' && this.stackHeight(p.position) > 1)
+      )
       .map(p => `${p.position.q},${p.position.r}`);
 
     if (remaining.length === 0) return true;
 
-    // Perform a BFS/DFS from first remaining piece
     const visited = new Set<string>();
     const stack = [remaining[0]];
 
@@ -58,8 +60,6 @@ export class Board {
         }
       });
     }
-
-    // If visited all remaining pieces, hive is intact
     return visited.size === remaining.length;
   }
 
@@ -67,6 +67,17 @@ export class Board {
     return this.pieces.filter(
       p => p.position.q === coord.q && p.position.r === coord.r
     ).length;
+  }
+
+  getStackAt(coord: HexCoord): Piece[] {
+    return this.pieces
+      .filter(p => p.position.q === coord.q && p.position.r === coord.r)
+      .sort((a, b) => a.stackLevel - b.stackLevel); // lowest to highest
+  }
+
+  updateStackLevelsAt(coord: HexCoord): number {
+    const stack = this.getStackAt(coord);
+    return stack.length; // place it on top
   }
 
    /**
@@ -86,4 +97,5 @@ export class Board {
   addDir(coord: HexCoord, dir: HexCoord): HexCoord {
     return { q: coord.q + dir.q, r: coord.r + dir.r };
   }
+
 }
