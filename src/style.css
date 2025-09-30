@@ -6,13 +6,14 @@
 	text-rendering: optimizeLegibility;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	
 }
 
 @font-face {
 	font-family: "JLR Bizzy Beez";
 	src: url("public/fonts/jlr-bizzy-beez.ttf") format("truetype");
 	font-weight: normal;
-	font-style: normal;
+	font-style: cursive;
 }
 
 .bee-text {
@@ -35,21 +36,21 @@ a:hover {
 
 body {
 	margin: 0;
+	padding: 0;
 	display: flex;
 	flex-direction: column;
-
- 
 	min-width: 320px;
 	min-height: 100vh;
-	background-color: #000000fd; /* your dark theme */
+	background-color: #000000fd; 
 	padding-bottom: 50px;
+	font-family: 'Poppins', sans-serif;
 }
 
 .board {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	gap: 5px; /* space between rows */
+	gap: 5px; 
 	margin-top: 50px;
 }
 
@@ -59,7 +60,7 @@ body {
 }
 
 .hex-row:nth-child(even) {
-	margin-left: 30px; /* offset every other row */
+	margin-left: 30px; 
 }
 
 /* Container holding everything: banks + board */
@@ -166,9 +167,8 @@ body {
 	min-height: 1.5em; 
 	text-align: center;
 	font-size: 1.2em;
+	font-weight: 800;
 }
-
-
 
 /* Overlay covers the screen */
 #popup-overlay {
@@ -207,7 +207,9 @@ body {
 	margin: 0;
 	font-size: 1.6rem;
 	font-weight: bold;
+	font-family: 'Poppins', sans-serif;
 }
+
 
 /* Close button (X) */
 #close-popup {
@@ -272,31 +274,6 @@ button
 	color: #ffffff;
 }
 
-footer {
-	text-align: center;
-	padding: 10px;
-	position: fixed;
-	bottom: 0;
-	width: 100%;
-	background: #000000;
-	font-size: 0.9em;
-}
-
-footer .project-note {
-	color: #aaa;
-	font-style: italic;
-}
-
-footer .author-link {
-	color: #ffe066; 
-	font-weight: bold;
-	text-decoration: none;
-}
-
-footer .author-link:hover {
-	text-decoration: underline;
-}
-
 .popup-overlay {
 	position: fixed;
 	top: 0;
@@ -315,16 +292,12 @@ footer .author-link:hover {
 }
 
 .popup-content {
-	position: relative;          /* makes ❌ position relative to box */
-	background: #111;
-	border: 2px solid #ffe066;
-	color: #ffe066;
-	border-radius: 12px;
+	position: relative;        
+	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
 	padding: 30px 20px;
-	max-width: 500px;
+	max-width: 700px;
 	text-align: center;
-	box-shadow: 0 8px 20px rgba(0,0,0,0.8);
-	font-family: sans-serif;
+	border: 1px solid#ffe066;
 }
 
 .popup-close {
@@ -348,7 +321,7 @@ footer .author-link:hover {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: rgba(13, 3, 27, 0.85); /* same as win popup overlay */
+	background: rgba(13, 3, 27, 0.85); 
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -363,15 +336,13 @@ footer .author-link:hover {
 /* Popup box (shared style for win + rules) */
 .popup,
 .popup-content {
-	background: #1a0f2b;        /* same dark violet as win popup */
-	color: #ffe066;             /* golden text */
+	background: rgba(50, 49, 61, 0.5);        
 	padding: 25px 35px;
 	border-radius: 16px;
 	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
 	text-align: center;
 	position: relative;
 	min-width: 280px;
-	max-width: 500px;
 	animation: popIn 0.25s ease;
 	font-family: sans-serif;
 }
@@ -383,6 +354,7 @@ footer .author-link:hover {
 	font-size: 1.6rem;
 	font-weight: bold;
 	color: #ffe066;
+	font-family: 'Poppins', sans-serif;
 }
 
 /* Close button (X) */
@@ -403,4 +375,61 @@ footer .author-link:hover {
 #close-rules:hover,
 .popup-close:hover {
 	color: #ffffff;
+}
+
+.rules-list {
+	text-align: left;
+	max-height: 60vh; 
+	overflow-y: auto; 
+	padding-right: 10px;
+	color: #ffe066;
+	font-family: 'Poppins', sans-serif;
+}
+
+
+/*Custom scrollbar for Chrome, Edge, Safari */
+.popup-content::-webkit-scrollbar {
+  width: 4px;
+  background: transparent;
+}
+
+.popup-content::-webkit-scrollbar-thumb {
+  background: #ffe066;
+  border-radius: 4px;
+}
+
+.popup-content::-webkit-scrollbar-track {
+  background: rgba(50, 49, 61, 0.2);
+  border-radius: 4px;
+}
+
+/* For Firefox */
+.popup-content {
+  scrollbar-width: thin;
+  scrollbar-color: #ffe066 rgba(50, 49, 61, 0.2);
+}
+
+footer {
+	text-align: center;
+	padding: 10px;
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	background: #000000;
+	font-size: 0.9em;
+}
+
+footer .project-note {
+	color: #aaa;
+	font-style: italic;
+}
+
+footer .author-link {
+	color: #ffe066; 
+	font-weight: bold;
+	text-decoration: none;
+}
+
+footer .author-link:hover {
+	text-decoration: underline;
 }

@@ -2,8 +2,6 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-
-		<!-- Favicon + PWA -->
 		<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
 		<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
@@ -16,8 +14,8 @@
 			html, body {
 				margin: 0;
 				height: 100%;
-				background: #000000;  /* match your canvas background */
-				visibility: hidden;   /* hide until JS says ready */
+				background: #000000;  
+				visibility: hidden;
 			}
 			body.ready {
 				visibility: visible;
@@ -32,6 +30,8 @@
 				background: #000000;
 			}
 		</style>
+		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
+		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
 		<!-- Preload external CSS to reduce flash -->
 		<link rel="preload" href="/src/style.css" as="style">
@@ -83,6 +83,16 @@
 								      <p>Only Beetles can climb.</p>
 								      <p>A Beetle on top controls the stack; covered pieces cannot move until uncovered.</p>
 								    </li>
+									<li>
+										<h3>
+											🪲 Movement of Each Bug
+										</h3>
+										<p>Queen Bee 🐝 – Moves exactly 1 space (sliding).</p>
+										<p>Soldier Ant 🐜 – Moves to any distance around the hive, sliding freely.</p>
+										<p>Beetle 🪲 – Moves 1 space (like Queen) but can climb on top of other pieces.</p>
+										<p> Grasshopper 🦗 – Jumps in a straight line over one or more pieces, landing in the first empty space. Must jump over at least one piece. </p>
+										<p> Spider 🕷️ – Moves exactly 3 spaces, sliding around the hive. Cannot backtrack or stop early </p>
+									</li>
 								  </ol>
 								</section>
 
@@ -94,7 +104,7 @@
 			</div>
 
 			<canvas id="hive-canvas" width="1400" height="750"
-				style="border:1px solid #ffe066; display:block; margin:auto;">
+				style="border:2px solid #ffe066; display:block; margin:auto;">
 			</canvas>
 		</div>
 
