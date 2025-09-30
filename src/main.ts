@@ -226,7 +226,14 @@ function renderCanvasBoard() {
   // ---- Drag piece ----
   if (selected && selected.from === "bank") {
     const ctx = renderer.ctx;
-    let typeKey = selected.type.toLowerCase();
+    // Map bank piece types to the actual constructor names used in CanvasRenderer
+    let typeKey: string = selected.type;
+    if (selected.type === "bee") typeKey = "QueenBee";
+    if (selected.type === "ant") typeKey = "SoldierAnt";
+    if (selected.type === "hopper") typeKey = "Grasshopper";
+    if (selected.type === "spider") typeKey = "Spider";
+    if (selected.type === "beetle") typeKey = "Beetle";
+    
     const img = loadPieceImage(typeKey, selected.color);
     ctx.drawImage(img, mousePos.x - HEX_SIZE, mousePos.y - HEX_SIZE, HEX_SIZE * 2, HEX_SIZE * 2);
   } else if (selected && selected.from === "board") {

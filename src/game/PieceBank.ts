@@ -22,6 +22,7 @@ export function drawPieceBanks(bankPieces: BankPiece[], ctx: CanvasRenderingCont
     if (piece.type === "spider") typeKey = "Spider";
     if (piece.type === "beetle") typeKey = "Beetle";
     
+    console.log(`🔍 PieceBank calling loadPieceImage with: type="${typeKey}", color="${piece.color}"`);
     const img = loadPieceImage(typeKey, piece.color);
     
     // Check if image is loaded before drawing
