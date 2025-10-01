@@ -20,117 +20,170 @@ showWinnerPopup("White"); // or showWinnerPopup("Black");
  */
 
 export class Game {
-  board: Board;
-  currentPlayer: Player;
-  turnCount: number;
+	board: Board;
+	currentPlayer: Player;
+	turnCount: number;
 
-  constructor() {
-    this.board = new Board();
-    this.currentPlayer = "White";
-    this.turnCount = 1;
-  }
+	constructor() {
+		this.board = new Board();
+		this.currentPlayer = "White";
+		this.turnCount = 1;
+	}
 
-  /** Switch to the other player and increment turn */
-  nextTurn(): void {
-    this.currentPlayer = this.currentPlayer === "White" ? "Black" : "White";
-    this.turnCount++;
-  }
+	/** Switch to the other player and increment turn */
+	nextTurn(): void {
+		this.currentPlayer = this.currentPlayer === "White" ? "Black" : "White";
+		this.turnCount++;
+	}
 
-  /**
-   * Place a piece on the board if the move is valid.
-   * Checks:
-   *  - Destination is empty
-   *  - If not the very first move, new piece must touch at least one piece
-   *  - QueenBee must be placed by each player's 4th turn
-   */
-  placePiece(piece: Piece, coord: { q: number; r: number }): boolean {
-    // destination must be empty
-    console.log("placePiece", coord.q, coord.r);
+	/**
+	 * Place a piece on the board if the move is valid.
+	 * Checks:
+	 *  - Destination is empty
+	 *  - If not the very first move, new piece must touch at least one piece
+	 *  - QueenBee must be placed by each player's 4th turn
+	 */
+	// placePiece(piece: Piece, coord: { q: number; r: number }): boolean {
+	//   // destination must be empty
+	//   console.log("placePiece", coord.q, coord.r);
 
-    if (piece.owner !== this.currentPlayer) return false;
-    if (!this.board.isEmpty(coord)) return false;
+	//   if (piece.owner !== this.currentPlayer) return false;
+	//   if (!this.board.isEmpty(coord)) return false;
 
-    if (this.board.pieces.length === 0) {
-      this.board.addPiece(piece, coord);
-      return true;
-    }
-  
-    const neighbors = this.board.neighbors(coord);
-    let touchesOwn = false;
+	//   if (this.board.pieces.length === 0) {
+	//     this.board.addPiece(piece, coord);
+	//     return true;
+	//   }
+	
+	//   const neighbors = this.board.neighbors(coord);
+	//   let touchesOwn = false;
 
-    for (const n of neighbors) {
-      const piece = this.board.pieces.find(p => p.position.q === n.q && p.position.r === n.r);
-      if (!piece) continue;
-      if (piece.owner === this.currentPlayer) touchesOwn = true;
-      else return false;
-    }
+	//   for (const n of neighbors) {
+	//     const piece = this.board.pieces.find(p => p.position.q === n.q && p.position.r === n.r);
+	//     if (!piece) continue;
+	//     if (piece.owner === this.currentPlayer) touchesOwn = true;
+	//     else return false;
+	//   }
 
-    if (this.board.pieces.length > 1 && !touchesOwn) return false;
+	//   if (this.board.pieces.length > 1 && !touchesOwn) return false;
 
-    // queen-bee rule: each player must place queen by their 4th turn
-    const samePlayerPieces = this.board.pieces.filter(
-      p => p.owner === piece.owner
-    );
-    const hasQueen = samePlayerPieces.some(p => p.constructor.name === "QueenBee");
-    if (!hasQueen && samePlayerPieces.length >= 3 && piece.constructor.name !== "QueenBee") {
-      return false;
-    }
+	//   // queen-bee rule: each player must place queen by their 4th turn
+	//   const samePlayerPieces = this.board.pieces.filter(
+	//     p => p.owner === piece.owner
+	//   );
+	//   const hasQueen = samePlayerPieces.some(p => p.constructor.name === "QueenBee");
+	//   if (!hasQueen && samePlayerPieces.length >= 3 && piece.constructor.name !== "QueenBee") {
+	//     return false;
+	//   }
 
-    // all checks passed: add to board
-    this.board.addPiece(piece, coord);
-    this.board.updateStackLevelsAt(coord);
-    return true;
-  }
+	//   // all checks passed: add to board
+	//   this.board.addPiece(piece, coord);
+	//   this.board.updateStackLevelsAt(coord);
+	//   return true;
+	// }
+	placePiece(piece: Piece, coord: { q: number; r: number }): boolean {
+	console.log("placePiece", coord.q, coord.r);
+	if (piece.owner !== this.currentPlayer) return false;
+	if (!this.board.isEmpty(coord)) return false;
 
-  /**
-   * Moving pieces that are already on the board.
-   * Checks:
-   *  - The piece belongs to the current player
-   *  - The destination is one of piece.legalMoves(board)
-   *  - The hive remains intact after the move
-   * Result:
-   *  - Remove the piece from its old hex
-   *  - Set its position to the new hex
-   */
-  movePiece(piece: Piece, to: { q: number; r: number }): boolean {
-    // must be this player's piece
-    if (piece.owner !== this.currentPlayer) return false;
+	// first move(white)
+	if (this.board.pieces.length === 0) {
+		this.board.addPiece(piece, coord);
+		return true;
+	}
 
-    // check if move legal
-    const legal = piece.legalMoves(this.board);
-    const allowed = legal.some(c => c.q === to.q && c.r === to.r);
-    if (!allowed) {
-      console.log("Move failed: Not a legal move");
-      console.log("Legal moves:", legal);
-      console.log("Attempted move to:", to);
-    return false;
-    }
+	//second move(black)
+	if (this.board.pieces.length === 1) {
+		const neighbors = this.board.neighbors(coord);
+		const touching = neighbors.some(n => !this.board.isEmpty(n));
+		if (!touching) return false;
 
-    // try the move and ensure hive stays intact
-    const old = { ...piece.position };
-    if (this.board.pieces.length > 2 && !(piece.type === "beetle" && piece.stackLevel === 0)) {
-      piece.position = to;
-      if (!this.board.isHiveIntact(piece, to)) {
-        // revert if the hive would break
-        piece.position = old;
-        console.log("Move failed: Hive not intact");
-        return false;
-      }
-    }
+		this.board.addPiece(piece, coord);
+		return true;
+	}
 
-    piece.position = to;
-    // this.board.updateStackLevelsAt(old);
-    piece.stackLevel = this.board.updateStackLevelsAt(to);
-    return true;
-  }
+	// all next moves
+	const neighbors = this.board.neighbors(coord);
+	let touchesOwn = false;
 
-  checkWin(): Player | null {
-    const queens = this.board.pieces.filter(p => p.constructor.name === "QueenBee");
-    for (const q of queens) {
-      const neighbors = this.board.neighbors(q.position);
-      const surrounded = neighbors.every(n => !this.board.isEmpty(n));
-      if (surrounded) return q.owner === "White" ? "Black" : "White";
-    }
-    return null;
-  }
+	for (const n of neighbors) {
+		const neighborPiece = this.board.pieces.find(
+			p => p.position.q === n.q && p.position.r === n.r
+		);
+		if (!neighborPiece) continue;
+
+		if (neighborPiece.owner === this.currentPlayer) {
+			touchesOwn = true;
+		} else {
+			return false;
+		}
+	}
+
+	if (!touchesOwn) return false;
+
+	// check - 4th move- should be BEE
+	const samePlayerPieces = this.board.pieces.filter(
+		p => p.owner === piece.owner
+	);
+	const hasQueen = samePlayerPieces.some(p => p.constructor.name === "QueenBee");
+	if (!hasQueen && samePlayerPieces.length >= 3 && piece.constructor.name !== "QueenBee") {
+		return false;
+	}
+
+	this.board.addPiece(piece, coord);
+	this.board.updateStackLevelsAt(coord);
+	return true;
+}
+
+	/**
+	 * Moving pieces that are already on the board.
+	 * Checks:
+	 *  - The piece belongs to the current player
+	 *  - The destination is one of piece.legalMoves(board)
+	 *  - The hive remains intact after the move
+	 * Result:
+	 *  - Remove the piece from its old hex
+	 *  - Set its position to the new hex
+	 */
+	movePiece(piece: Piece, to: { q: number; r: number }): boolean {
+		// must be this player's piece
+		if (piece.owner !== this.currentPlayer) return false;
+
+		// check if move legal
+		const legal = piece.legalMoves(this.board);
+		const allowed = legal.some(c => c.q === to.q && c.r === to.r);
+		if (!allowed) {
+			console.log("Move failed: Not a legal move");
+			console.log("Legal moves:", legal);
+			console.log("Attempted move to:", to);
+		return false;
+		}
+
+		// try the move and ensure hive stays intact
+		const old = { ...piece.position };
+		if (this.board.pieces.length > 2 && !(piece.type === "beetle" && piece.stackLevel === 0)) {
+			piece.position = to;
+			if (!this.board.isHiveIntact(piece, to)) {
+				// revert if the hive would break
+				piece.position = old;
+				console.log("Move failed: Hive not intact");
+				return false;
+			}
+		}
+
+		piece.position = to;
+		// this.board.updateStackLevelsAt(old);
+		piece.stackLevel = this.board.updateStackLevelsAt(to);
+		return true;
+	}
+
+	checkWin(): Player | null {
+		const queens = this.board.pieces.filter(p => p.constructor.name === "QueenBee");
+		for (const q of queens) {
+			const neighbors = this.board.neighbors(q.position);
+			const surrounded = neighbors.every(n => !this.board.isEmpty(n));
+			if (surrounded) return q.owner === "White" ? "Black" : "White";
+		}
+		return null;
+	}
 }
