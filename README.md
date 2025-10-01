@@ -4,6 +4,9 @@ Implementation of the classic abstract board game **Hive** using TypeScript, HTM
 This was developed as a Rush project at **Hive School** (42 Helsinki).  
 
 ---
+![Hive Screenshot](docs/screenshot.png)
+
+---
 
 ## 🎮 About the Game
 
