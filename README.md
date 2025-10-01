@@ -1,61 +1,87 @@
-# Hive-abstract-game
-the game Hive, designed by John Yianni
-# Hive Game Rules
+# 🐝 Hive Game (TypeScript)
 
-## Game Setup and Basic Play
-- **Players**: Two players, one with white pieces and one with black.  
-- **Objective**: Surround your opponent's Queen Bee on all sides to win.  
-- **Setup**: Each player takes all pieces of their color. Choose a starting player.  
-
-### First Turn
-- The starting player places one of their pieces in the center.  
-- The second player places a piece adjacent to the first one.  
-
-### Subsequent Turns
-On each subsequent turn, you may either:
-1. **Place a new piece**:  
-   - Place it adjacent to one of your own pieces.  
-   - It cannot touch an opponent's piece.  
-
-2. **Move a piece already on the board**:  
-   - According to its specific movement rules.  
-
-### Queen Bee Placement
-- You must place your **Queen Bee** on or before your **fourth turn**.  
-- Until your Queen is placed, you may **only place new pieces** (not move).  
+Implementation of the classic abstract board game **Hive** using TypeScript, HTML5 canvas and simple game logic.  
+This was developed as a Rush project at **Hive School** (42 Helsinki).  
 
 ---
 
-## Important Rules
-- **The Hive**: All pieces must remain connected, forming a single, contiguous hive.  
-- **Freedom of Movement**:  
-  - A piece cannot move if doing so would split the hive.  
-  - Pieces must be able to physically slide into their destination space.  
-- **Piece Stacking (Beetle rule)**:  
-  - Beetles can climb on top of other pieces.  
-  - The top Beetle determines the color of the stack.  
-  - Pieces underneath a stack cannot be moved.  
+## 🎮 About the Game
+
+Hive is an abstract strategy game for two players, similar in depth to Chess or Go, but played without a board.  
+Players take turns placing or moving their insect pieces. The goal is to **completely surround the opponent’s Queen Bee**.
+
+Main features of this implementation:
+- Two-player game (White vs Black).
+- Rules enforced:
+  - Queen Bee must be placed by the 4th turn.
+  - New pieces must touch at least one of your own pieces (with exceptions for the first 2 moves).
+  - No placing pieces directly adjacent to the opponent’s hive (until connected).
+  - The hive must always stay intact (no breaking into two groups).
+  - Correct movement logic for Beetle, Grasshopper, Spider, Ant, Queen Bee.
+- Win detection when a Queen Bee is surrounded.
+- Interactive HTML5 canvas board with drag & drop placement.
+- Popup windows for rules and win messages.
 
 ---
 
-## Piece Movement
+## 📜 Rules Recap
 
-- **Queen Bee** 🐝  
-  - Moves **one space** at a time along the edges of the hive.  
+1. **Placement**  
+   - First piece (White) can go anywhere.  
+   - Second piece (Black) must be placed adjacent to the first.  
+   - Later pieces must touch at least one of your own and may not touch an opponent directly.  
 
-- **Spider** 🕷️  
-  - Moves **exactly three spaces** in one continuous path, staying in contact with the hive.  
+2. **Queen Bee**  
+   - Must be placed by your **4th turn**.  
+   - No moving pieces until your Queen is on the board.  
 
-- **Soldier Ant** 🐜  
-  - Can move **any number of spaces** in any direction along the hive’s edges.  
+3. **One Hive Rule**  
+   - All pieces must form a single continuous group.  
+   - You cannot move a piece if doing so would split the hive.  
 
-- **Grasshopper** 🦗  
-  - Jumps in a **straight line**, over one or more pieces, landing in the next empty space.  
+4. **Freedom to Move**  
+   - Sliding pieces require space to move in/out of a hex.  
 
-- **Beetle** 🪲  
-  - Moves **one space at a time**.  
-  - Can climb on top of other pieces (including stacks).  
+5. **Stacking (Beetle)**  
+   - Beetles can climb on top of other pieces.  
+   - Only the top piece of a stack is active.  
 
-## Quantity
-- one bee, two spiders, 2 beetles, 3 grasshopper, 3 solder ants
+6. **Win Condition**  
+   - If a Queen Bee is surrounded on all 6 sides, that player loses.  
+
+---
+
+## 🛠️ Installation & Run
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/<your-username>/Hive-abstract-game.git
+cd Hive-abstract-game
+npm install
+```
+
+Run in dev mode with Vite:
+
+```bash
+npm run dev
+```
+
+Build for production:
+
+```bash
+npm run build
+```
+
+Open in browser at: [http://localhost:5173](http://localhost:5173)
+
+---
+
+## ✨ Features to Add (Future Work)
+
+- online multiplayer.  
+- Drag and drop moves.  
+- User friendly message for forbidden move.
+
+
 ---
