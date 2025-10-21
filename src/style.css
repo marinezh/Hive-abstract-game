@@ -11,7 +11,7 @@
 
 @font-face {
 	font-family: "JLR Bizzy Beez";
-	src: url("public/fonts/jlr-bizzy-beez.ttf") format("truetype");
+	src: url("/fonts/jlr-bizzy-beez.ttf") format("truetype");
 	font-weight: normal;
 	font-style: cursive;
 }
