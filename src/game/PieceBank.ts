@@ -12,11 +12,18 @@ export type BankPiece = {
 
 const pieceImages: Record<string, HTMLImageElement> = {};
 
+function getAssetPath(filename: string): string {
+  // For local development, assets are served from public/
+  // For production, they'll be served from the base URL
+  const base = import.meta.env.BASE_URL || '/';
+  return `${base}assets/${filename}`;
+}
+
 export function loadPieceImage(type: BankPiece["type"], color: Player): HTMLImageElement {
   const key = `${type}_${color}`;
   if (!pieceImages[key]) {
     const img = new Image();
-    img.src = `./src/assets/${type}_${color.toLowerCase()}.png`;
+    img.src = getAssetPath(`${type}_${color.toLowerCase()}.png`);
     pieceImages[key] = img;
   }
   return pieceImages[key];
@@ -25,7 +32,25 @@ export function loadPieceImage(type: BankPiece["type"], color: Player): HTMLImag
 export function drawPieceBanks(bankPieces: BankPiece[], ctx: CanvasRenderingContext2D) {
   bankPieces.forEach(piece => {
     const img = loadPieceImage(piece.type, piece.color);
-    ctx.drawImage(img, piece.x, piece.y, piece.width, piece.height);
+    const { x, y, width, height } = piece;
+
+    // Only draw if image is loaded successfully, otherwise draw placeholder
+    if (img.complete && img.naturalWidth > 0) {
+      ctx.drawImage(img, x, y, width, height);
+    } 
+    // else {
+    //   // Draw placeholder rectangle
+    //   ctx.fillStyle = piece.color === 'White' ? '#fff' : '#000';
+    //   ctx.fillRect(x, y, width, height);
+    //   ctx.strokeStyle = piece.color === 'White' ? '#000' : '#fff';
+    //   ctx.strokeRect(x, y, width, height);
+      
+    //   // Draw piece type text
+    //   ctx.fillStyle = piece.color === 'White' ? '#000' : '#fff';
+    //   ctx.font = '12px Arial';
+    //   ctx.textAlign = 'center';
+    //   ctx.fillText(piece.type.toUpperCase(), x + width/2, y + height/2 + 4);
+    // }
   });
 }
 

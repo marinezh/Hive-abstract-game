@@ -133,11 +133,18 @@ import { Piece } from '../models/Piece';
 // 🔹 Global cache for piece images
 const pieceImages: Record<string, HTMLImageElement> = {};
 
+function getAssetPath(filename: string): string {
+  // For local development, assets are served from public/
+  // For production, they'll be served from the base URL
+  const base = import.meta.env.BASE_URL || '/';
+  return `${base}assets/${filename}`;
+}
+
 export function loadPieceImage(type: string, color: string): HTMLImageElement {
   const key = `${type}_${color}`;
   if (!pieceImages[key]) {
     const img = new Image();
-    img.src = `./src/assets/${type}_${color.toLowerCase()}.png`;
+    img.src = getAssetPath(`${type}_${color.toLowerCase()}.png`);
     pieceImages[key] = img;
   }
   return pieceImages[key];
@@ -235,21 +242,28 @@ export class CanvasRenderer {
     const { x, y } = this.hexToPixel(q, r);
     const size = this.size;
 
-    let typeKey = piece.constructor.name.toLowerCase();
-    if (typeKey.includes("queen")) typeKey = "bee";
-    else if (typeKey.includes("beetle")) typeKey = "beetle";
-    else if (typeKey.includes("spider")) typeKey = "spider";
-    else if (typeKey.includes("grass")) typeKey = "hopper";
-    else if (typeKey.includes("ant")) typeKey = "ant";
+    // Use piece.type directly for better reliability
+    const typeKey = piece.type || piece.constructor.name.toLowerCase();
 
     const img = loadPieceImage(typeKey, piece.owner);
 
-    this.ctx.drawImage(
-      img,
-      x - size * 0.9,
-      y - size * 0.9,
-      size * 1.8,
-      size * 1.8
-    );
+    // Only draw if image is loaded successfully, otherwise draw placeholder
+    if (img.complete && img.naturalWidth > 0) {
+      this.ctx.drawImage(
+        img,
+        x - size * 0.9,
+        y - size * 0.9,
+        size * 1.8,
+        size * 1.8
+      );
+    } else {
+      // Draw placeholder circle
+      this.ctx.beginPath();
+      this.ctx.arc(x, y, size * 0.8, 0, 2 * Math.PI);
+      this.ctx.fillStyle = piece.owner === 'White' ? '#fff' : '#000';
+      this.ctx.fill();
+      this.ctx.strokeStyle = piece.owner === 'White' ? '#000' : '#fff';
+      this.ctx.stroke();
+     }
   }
 }
