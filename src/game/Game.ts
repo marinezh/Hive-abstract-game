@@ -87,8 +87,8 @@ export class Game {
 	const samePlayerPieces = this.board.pieces.filter(
 		p => p.owner === piece.owner
 	);
-	const hasQueen = samePlayerPieces.some(p => p.constructor.name === "QueenBee");
-	if (!hasQueen && samePlayerPieces.length >= 3 && piece.constructor.name !== "QueenBee") {
+	const hasQueen = samePlayerPieces.some(p => p.constructor.name === "QueenBee" || p.type === "bee");
+	if (!hasQueen && samePlayerPieces.length >= 3 && piece.constructor.name !== "QueenBee" && piece.type !== "bee") {
 		return false;
 	}
 
