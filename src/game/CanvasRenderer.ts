@@ -137,7 +137,9 @@ function getAssetPath(filename: string): string {
   // For local development, assets are served from public/
   // For production, they'll be served from the base URL
   const base = import.meta.env.BASE_URL || '/';
-  return `${base}assets/${filename}`;
+  const fullPath = `${base}assets/${filename}`;
+  console.log('Loading asset:', fullPath); // Debug log
+  return fullPath;
 }
 
 export function loadPieceImage(type: string, color: string): HTMLImageElement {
