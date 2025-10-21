@@ -243,14 +243,22 @@ function renderCanvasBoard() {
     const ctx = renderer.ctx;
     let typeKey = selected.type.toLowerCase();
     const img = loadPieceImage(typeKey, selected.color);
-    ctx.drawImage(img, mousePos.x - HEX_SIZE, mousePos.y - HEX_SIZE, HEX_SIZE * 2, HEX_SIZE * 2);
+    
+    // Only draw if image is loaded, otherwise leave empty space
+    if (img.complete && img.naturalWidth > 0) {
+      ctx.drawImage(img, mousePos.x - HEX_SIZE, mousePos.y - HEX_SIZE, HEX_SIZE * 2, HEX_SIZE * 2);
+    }
   } else if (selected && selected.from === "board") {
   // Highlight selected board piece as I suggested earlier
     const ctx = renderer.ctx;  
     const type = selected.ref.type;
     const owner = selected.ref.owner; // "White" or "Black"
     const img = loadPieceImage(type, owner);
-    ctx.drawImage(img, mousePos.x - HEX_SIZE, mousePos.y - HEX_SIZE, HEX_SIZE * 2, HEX_SIZE * 2);
+    
+    // Only draw if image is loaded, otherwise leave empty space
+    if (img.complete && img.naturalWidth > 0) {
+      ctx.drawImage(img, mousePos.x - HEX_SIZE, mousePos.y - HEX_SIZE, HEX_SIZE * 2, HEX_SIZE * 2);
+    }
   }
   if (validMoves.length > 0) {
     drawHighlightedHexes(renderer.ctx, validMoves, renderer);
