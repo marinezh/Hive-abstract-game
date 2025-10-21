@@ -13,19 +13,36 @@ import type { Board } from "./Board";
 export class QueenBee extends Piece {
   readonly type = "bee";
 
+  // legalMoves(board: Board): HexCoord[] {
+  //   const currentPos = this.position;
+  //   const neighborHexes = board.neighbors(currentPos);
+
+  //   const legalMoves: HexCoord[] = [];
+
+  //   for (const hex of neighborHexes) {
+  //     const canMove = canSlide(board, currentPos, hex);
+  //     if (canMove) {
+  //       legalMoves.push(hex);
+  //     }
+  //   }
+
+  //   return legalMoves;
+  // }
   legalMoves(board: Board): HexCoord[] {
     const currentPos = this.position;
     const neighborHexes = board.neighbors(currentPos);
-
     const legalMoves: HexCoord[] = [];
 
     for (const hex of neighborHexes) {
-      const canMove = canSlide(board, currentPos, hex);
-      if (canMove) {
+      if (!canSlide(board, currentPos, hex)) continue;
+
+      // simulate move using isHiveIntact
+      const hiveIntact = board.isHiveIntact(this, hex);
+
+      if (hiveIntact) {
         legalMoves.push(hex);
       }
     }
-
     return legalMoves;
   }
 }

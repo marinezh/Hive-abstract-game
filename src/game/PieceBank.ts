@@ -29,22 +29,64 @@ export function drawPieceBanks(bankPieces: BankPiece[], ctx: CanvasRenderingCont
   });
 }
 
-export function layoutBankPositions(bankPieces: BankPiece[], canvasWidth: number, dpr: number, pieceSize: number) {
-  const leftX = 20;
-  const rightX = canvasWidth / dpr - pieceSize - 20;
-  const startY = 60;
-  const gapY = pieceSize + 10;
+// export function layoutBankPositions(bankPieces: BankPiece[], canvasWidth: number, dpr: number, pieceSize: number) {
+//   const leftX = 20;
+//   const rightX = canvasWidth / dpr - pieceSize - 20;
+//   const startY = 60;
+//   const gapY = pieceSize + 10;
+
+//   let yBlack = startY;
+//   let yWhite = startY;
+
+//   const order = ["bee","spider","beetle","hopper","ant"];
+
+//   const blackPieces = bankPieces.filter(p => p.color === "Black")
+//     .sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
+//   const whitePieces = bankPieces.filter(p => p.color === "White")
+//     .sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
+
+//   blackPieces.forEach(p => { p.x = leftX;  p.y = yBlack;  yBlack += gapY; });
+//   whitePieces.forEach(p => { p.x = rightX; p.y = yWhite;  yWhite += gapY; });
+// }
+
+export function layoutBankPositions(
+  bankPieces: BankPiece[],
+  canvasWidth: number,
+  dpr: number,
+  pieceSize: number
+) {
+  // --- Work entirely in canvas pixel units ---
+  const leftX = 20 * dpr;
+  const rightX = canvasWidth - pieceSize * dpr - 20 * dpr;
+  const startY = 60 * dpr;
+  const gapY = (pieceSize + 10) * dpr;
 
   let yBlack = startY;
   let yWhite = startY;
 
-  const order = ["bee","spider","beetle","hopper","ant"];
+  const order = ["bee", "spider", "beetle", "hopper", "ant"];
 
-  const blackPieces = bankPieces.filter(p => p.color === "Black")
-    .sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
-  const whitePieces = bankPieces.filter(p => p.color === "White")
+  const blackPieces = bankPieces
+    .filter(p => p.color === "Black")
     .sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
 
-  blackPieces.forEach(p => { p.x = leftX;  p.y = yBlack;  yBlack += gapY; });
-  whitePieces.forEach(p => { p.x = rightX; p.y = yWhite;  yWhite += gapY; });
+  const whitePieces = bankPieces
+    .filter(p => p.color === "White")
+    .sort((a, b) => order.indexOf(a.type) - order.indexOf(b.type));
+
+  blackPieces.forEach(p => {
+    p.x = leftX;
+    p.y = yBlack;
+    p.width = pieceSize * dpr;
+    p.height = pieceSize * dpr;
+    yBlack += gapY;
+  });
+
+  whitePieces.forEach(p => {
+    p.x = rightX;
+    p.y = yWhite;
+    p.width = pieceSize * dpr;
+    p.height = pieceSize * dpr;
+    yWhite += gapY;
+  });
 }

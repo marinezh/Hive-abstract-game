@@ -31,6 +31,7 @@ export class Spider extends Piece {
         if (visited.has(key)) continue;
         if (!board.isEmpty(n)) continue;
         if (!canSlide(board, pos, n)) continue;
+        if (!board.isHiveIntact(this, n)) continue;
 
         visited.add(key);
         dfs(n, steps + 1);
