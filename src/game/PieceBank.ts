@@ -34,23 +34,11 @@ export function drawPieceBanks(bankPieces: BankPiece[], ctx: CanvasRenderingCont
     const img = loadPieceImage(piece.type, piece.color);
     const { x, y, width, height } = piece;
 
-    // Only draw if image is loaded successfully, otherwise draw placeholder
+    // Only draw if image is loaded successfully, otherwise leave empty space
     if (img.complete && img.naturalWidth > 0) {
       ctx.drawImage(img, x, y, width, height);
-    } 
-    // else {
-    //   // Draw placeholder rectangle
-    //   ctx.fillStyle = piece.color === 'White' ? '#fff' : '#000';
-    //   ctx.fillRect(x, y, width, height);
-    //   ctx.strokeStyle = piece.color === 'White' ? '#000' : '#fff';
-    //   ctx.strokeRect(x, y, width, height);
-      
-    //   // Draw piece type text
-    //   ctx.fillStyle = piece.color === 'White' ? '#000' : '#fff';
-    //   ctx.font = '12px Arial';
-    //   ctx.textAlign = 'center';
-    //   ctx.fillText(piece.type.toUpperCase(), x + width/2, y + height/2 + 4);
-    // }
+    }
+    // If image isn't loaded, just don't draw anything (empty space)
   });
 }
 

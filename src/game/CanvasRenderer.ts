@@ -247,7 +247,7 @@ export class CanvasRenderer {
 
     const img = loadPieceImage(typeKey, piece.owner);
 
-    // Only draw if image is loaded successfully, otherwise draw placeholder
+    // Only draw if image is loaded successfully, otherwise leave empty space
     if (img.complete && img.naturalWidth > 0) {
       this.ctx.drawImage(
         img,
@@ -256,14 +256,7 @@ export class CanvasRenderer {
         size * 1.8,
         size * 1.8
       );
-    } else {
-      // Draw placeholder circle
-      this.ctx.beginPath();
-      this.ctx.arc(x, y, size * 0.8, 0, 2 * Math.PI);
-      this.ctx.fillStyle = piece.owner === 'White' ? '#fff' : '#000';
-      this.ctx.fill();
-      this.ctx.strokeStyle = piece.owner === 'White' ? '#000' : '#fff';
-      this.ctx.stroke();
-     }
+    }
+    // If image isn't loaded, just don't draw anything (empty space)
   }
 }
