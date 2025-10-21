@@ -43,44 +43,6 @@ export class Game {
 	 *  - If not the very first move, new piece must touch at least one piece
 	 *  - QueenBee must be placed by each player's 4th turn
 	 */
-	// placePiece(piece: Piece, coord: { q: number; r: number }): boolean {
-	//   // destination must be empty
-	//   console.log("placePiece", coord.q, coord.r);
-
-	//   if (piece.owner !== this.currentPlayer) return false;
-	//   if (!this.board.isEmpty(coord)) return false;
-
-	//   if (this.board.pieces.length === 0) {
-	//     this.board.addPiece(piece, coord);
-	//     return true;
-	//   }
-	
-	//   const neighbors = this.board.neighbors(coord);
-	//   let touchesOwn = false;
-
-	//   for (const n of neighbors) {
-	//     const piece = this.board.pieces.find(p => p.position.q === n.q && p.position.r === n.r);
-	//     if (!piece) continue;
-	//     if (piece.owner === this.currentPlayer) touchesOwn = true;
-	//     else return false;
-	//   }
-
-	//   if (this.board.pieces.length > 1 && !touchesOwn) return false;
-
-	//   // queen-bee rule: each player must place queen by their 4th turn
-	//   const samePlayerPieces = this.board.pieces.filter(
-	//     p => p.owner === piece.owner
-	//   );
-	//   const hasQueen = samePlayerPieces.some(p => p.constructor.name === "QueenBee");
-	//   if (!hasQueen && samePlayerPieces.length >= 3 && piece.constructor.name !== "QueenBee") {
-	//     return false;
-	//   }
-
-	//   // all checks passed: add to board
-	//   this.board.addPiece(piece, coord);
-	//   this.board.updateStackLevelsAt(coord);
-	//   return true;
-	// }
 	placePiece(piece: Piece, coord: { q: number; r: number }): boolean {
 	console.log("placePiece", coord.q, coord.r);
 	if (piece.owner !== this.currentPlayer) return false;

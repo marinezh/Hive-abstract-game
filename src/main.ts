@@ -11,9 +11,7 @@ import { CanvasRenderer, loadPieceImage } from './game/CanvasRenderer';
 import {showWinnerPopup} from './popup'
 import type { Piece, Player } from './models/Piece';
 
-
-
-
+// Enviroment
 let validMoves: { q: number; r: number }[] = [];
 let mousePos = { x: 0, y: 0 };
 let bankPieces: BankPiece[] = [];
@@ -23,16 +21,31 @@ let selected:
 	| null = null;
 
 const canvas = document.getElementById('hive-canvas') as HTMLCanvasElement;
+let hoveredHex: { q: number, r: number } | null = null;
 
 // High-DPI setup
-const dpr = window.devicePixelRatio || 1;
-canvas.width = 1000 * dpr;
-canvas.height = 750 * dpr;
-canvas.style.width = "1000px";
-canvas.style.height = "750px";
+// Define your logical (virtual) canvas size
+const width = 1000;
+const height = 750;
 
-// Create renderer and scale context
-const renderer = new CanvasRenderer(canvas);
+// Get device pixel ratio (for HiDPI screens)
+const dpr = window.devicePixelRatio || 1;
+
+// Set actual canvas size in physical pixels
+canvas.width = width * dpr;
+canvas.height = height * dpr;
+
+// Set the displayed size in CSS pixels
+canvas.style.width = width + "px";
+canvas.style.height = height + "px";
+
+const pieceSize = 30;
+const HEX_SIZE = 30;
+
+// Create renderer
+const renderer = new CanvasRenderer(canvas, HEX_SIZE);
+
+// Scale only the context — not your coordinates
 renderer.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
 
 const game = new Game();
@@ -45,9 +58,6 @@ const pieceBankConfig: Array<{ type: BankPiece["type"]; count: number }> = [
 	{ type: "hopper", count: 3 },
 	{ type: "ant", count: 3 },
 ];
-const pieceSize = 50;
-
-const HEX_SIZE = 40 / dpr;
 
 // 🆕 ID helper
 let _id = 0;
@@ -70,22 +80,22 @@ function initPieceBanks() {
 			}
 		});
 	});
-	layoutBankPositions(bankPieces, canvas.width, dpr, pieceSize);
+	layoutBankPositions(bankPieces, width, dpr, pieceSize);
 }
 
-let hoveredHex: { q: number, r: number } | null = null;
+function getMousePos(evt: MouseEvent, canvas: HTMLCanvasElement) {
+  const rect = canvas.getBoundingClientRect();
+  const x = (evt.clientX - rect.left);
+  const y = (evt.clientY - rect.top);
+  // Convert from CSS pixels to your logical coordinate system
+  return { x, y };
+}
 
 // ---- CLICK HANDLER ----
 canvas.addEventListener('click', (e) => {
   const { x: clickX, y: clickY } = getMousePos(e, canvas);
-  const centerX = canvas.width / (2 * dpr);
-  const centerY = canvas.height / (2 * dpr);
-	// const rect = canvas.getBoundingClientRect();
-	// const clickX = e.clientX - rect.left;
-	// const clickY = e.clientY - rect.top;
-
-	// const centerX = canvas.width / dpr / 2;
-	// const centerY = canvas.height / dpr / 2;
+  const centerX = width / 2;
+  const centerY = height / 2;
 
 	// 1) BANK HIT-TEST
   if (!selected) {
@@ -107,10 +117,9 @@ canvas.addEventListener('click', (e) => {
       if (p.position.q === hex.q && p.position.r === hex.r && p.owner === game.currentPlayer && isTopPiece(p, game.board)) {
         selected = { from: "board", ref: p };
         validMoves = p.legalMoves(game.board);
-        console.log('Selected from board:', selected);  /// LOG
+        console.log('Selected from board:', selected);
         console.log('Stack level:', selected.ref.stackLevel);
         console.log('Type:', selected.ref.type);
-
         return;
       }
     }
@@ -119,25 +128,32 @@ canvas.addEventListener('click', (e) => {
   // Move or Place
   if (selected) {
     const sel = selected;
-    const target = pixelToHex(clickX - centerX, clickY - centerY, HEX_SIZE); /// PLACE of insert
-
+    const target = pixelToHex(clickX - centerX, clickY - centerY, HEX_SIZE);
+    
     if (sel.from === "bank") {                   /// BANK
+      const radius = 6;                           //board radius
+      if (Math.abs(target.q) > radius || Math.abs(target.r) > radius || Math.abs(target.q + target.r) > radius) {
+        console.log("❌ Outside board bounds:", target);
+        selected = null;
+        renderCanvasBoard();
+        return;
+      }
       const pieceObj = createPiece(sel.type, sel.color, target);
       if (pieceObj && game.placePiece(pieceObj, target)) {
         // remove from bank + reflow
         const idx = bankPieces.findIndex(p => p.id === sel.bankId);
         if (idx !== -1) {
           bankPieces.splice(idx, 1);
-          layoutBankPositions(bankPieces, canvas.width, dpr, pieceSize);
+          layoutBankPositions(bankPieces, width, dpr, pieceSize);
         }
           game.nextTurn(); 
       }
     } else if (sel.from === "board") {            /// BOARD
       if (game.movePiece(sel.ref, target)) {
-        console.log("Move successful");           /// LOG
+        console.log("Move successful");
         game.nextTurn();
       } else {
-        console.log("Move failed");                 /// LOG
+        console.log("Move failed");
       }
     }
     selected = null;
@@ -159,13 +175,9 @@ canvas.addEventListener('click', (e) => {
 canvas.addEventListener('mousemove', (e) => {
   mousePos = getMousePos(e, canvas);
   const { x: mouseX, y: mouseY } = getMousePos(e, canvas);
-  const centerX = canvas.width / (2 * dpr);
-  const centerY = canvas.height / (2 * dpr);
-	// const rect = canvas.getBoundingClientRect();
-	// const mouseX = e.clientX - rect.left;
-	// const mouseY = e.clientY - rect.top;
-	// const centerX = canvas.width / dpr / 2;
-	// const centerY = canvas.height / dpr / 2;
+  const centerX = width / 2;
+  const centerY = height / 2;
+
 	const newHoveredHex = pixelToHex(mouseX - centerX, mouseY - centerY, HEX_SIZE);
 	// Only redraw if hovered hex actually changes
 	if (!hoveredHex || hoveredHex.q !== newHoveredHex.q || hoveredHex.r !== newHoveredHex.r) {
@@ -180,79 +192,43 @@ canvas.addEventListener('mouseleave', () => {
 });
 
 // ---- RENDER LOOP ----
-// function renderCanvasBoard() {
-// 	renderer.clear();
-// 	drawPieceBanks(bankPieces, renderer.ctx);
-// 	renderer.drawBoard(game.board, hoveredHex);
-// }
+function drawHighlightedHexes(
+  ctx: CanvasRenderingContext2D, 
+  hexes: { q: number, r: number }[], 
+  renderer: CanvasRenderer
+) {
+  ctx.save();
+  ctx.fillStyle = 'rgba(0, 200, 0, 0.3)';
 
-/////////////////////////////////////////////////////
-// HELPERS
+  // Deduplicate hexes using a Set
+  const uniqueHexKeys = new Set<string>();
+  const uniqueHexes: { q: number, r: number }[] = [];
 
-// function drawHighlightedHexes(ctx: CanvasRenderingContext2D, hexes: {q:number,r:number}[], renderer: CanvasRenderer) {
-//   ctx.save();
-//   ctx.fillStyle = 'rgba(0, 200, 0, 0.3)'; 
-//   hexes.forEach(h => {
-//     const { x, y } = renderer.hexToPixel(h.q, h.r);
-//     ctx.beginPath();
-//     for (let i = 0; i < 6; i++) {
-//       const angle = Math.PI / 180 * (60 * i - 30);
-//       const px = x + HEX_SIZE * Math.cos(angle);
-//       const py = y + HEX_SIZE * Math.sin(angle);
-//       if (i === 0) ctx.moveTo(px, py);
-//       else ctx.lineTo(px, py);
-//     }
-//     ctx.closePath();
-//     ctx.fill();
-//   });
-//   ctx.restore();
-// }
+  hexes.forEach(h => {
+    const key = `${h.q},${h.r}`;
+    if (!uniqueHexKeys.has(key)) {
+      uniqueHexKeys.add(key);
+      uniqueHexes.push(h);
+    }
+  });
 
-  function drawHighlightedHexes(
-    ctx: CanvasRenderingContext2D, 
-    hexes: { q: number, r: number }[], 
-    renderer: CanvasRenderer
-  ) {
-    ctx.save();
-    ctx.fillStyle = 'rgba(0, 200, 0, 0.3)';
+  // Draw each unique hex
+  uniqueHexes.forEach(h => {
+    const { x, y } = renderer.hexToPixel(h.q, h.r);
+    ctx.beginPath();
+    for (let i = 0; i < 6; i++) {
+      const angle = Math.PI / 180 * (60 * i - 30);
+      const px = x + HEX_SIZE * Math.cos(angle);
+      const py = y + HEX_SIZE * Math.sin(angle);
+      if (i === 0) ctx.moveTo(px, py);
+      else ctx.lineTo(px, py);
+    }
+    ctx.closePath();
+    ctx.fill();
+  });
 
-    // Deduplicate hexes using a Set
-    const uniqueHexKeys = new Set<string>();
-    const uniqueHexes: { q: number, r: number }[] = [];
-
-    hexes.forEach(h => {
-      const key = `${h.q},${h.r}`;
-      if (!uniqueHexKeys.has(key)) {
-        uniqueHexKeys.add(key);
-        uniqueHexes.push(h);
-      }
-    });
-
-    // Draw each unique hex
-    uniqueHexes.forEach(h => {
-      const { x, y } = renderer.hexToPixel(h.q, h.r);
-      ctx.beginPath();
-      for (let i = 0; i < 6; i++) {
-        const angle = Math.PI / 180 * (60 * i - 30);
-        const px = x + HEX_SIZE * Math.cos(angle);
-        const py = y + HEX_SIZE * Math.sin(angle);
-        if (i === 0) ctx.moveTo(px, py);
-        else ctx.lineTo(px, py);
-      }
-      ctx.closePath();
-      ctx.fill();
-    });
-
-    ctx.restore();
-  }
-
-
-function getMousePos(evt: MouseEvent, canvas: HTMLCanvasElement) {
-  const rect = canvas.getBoundingClientRect();
-  return { x: evt.clientX - rect.left, y: evt.clientY - rect.top };
+  ctx.restore();
 }
-
-////////////////////////////////////////////////////////////////////////////////
 
 function renderCanvasBoard() {
   renderer.clear();
@@ -286,3 +262,8 @@ initPieceBanks();
 renderCanvasBoard();
 document.getElementById("game-container")?.classList.remove("hidden");
 document.body.classList.add("ready");
+
+//Logs for Fails to screen
+//Anyone move first
+
+//  Probably images... or not

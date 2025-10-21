@@ -23,14 +23,14 @@ export class Beetle extends Piece {
       if (destEmpty) {
         if (onTop) {
           // beetle on top can drop down or slide, no corridor check here
-          if (canSlide(board, this.position, c)) moves.push(c);
+          if (board.isHiveIntact(this, c) && canSlide(board, this.position, c)) moves.push(c);
         } else {
           // on ground, must slide to empty spot
-          if (canSlide(board, this.position, c)) moves.push(c);
+          if (board.isHiveIntact(this, c) && canSlide(board, this.position, c)) moves.push(c);
         }
       } else {
         // occupied spot means beetle can climb up
-        moves.push(c);
+        if (board.isHiveIntact(this, c)) moves.push(c);
       }
     }
 
