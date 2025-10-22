@@ -21,12 +21,12 @@ showWinnerPopup("White"); // or showWinnerPopup("Black");
 
 export class Game {
 	board: Board;
-	currentPlayer: Player;
+	currentPlayer: Player | null;
 	turnCount: number;
 
 	constructor() {
 		this.board = new Board();
-		this.currentPlayer = "White";
+		this.currentPlayer = null;
 		this.turnCount = 1;
 	}
 
@@ -45,20 +45,27 @@ export class Game {
 	 */
 	placePiece(piece: Piece, coord: { q: number; r: number }): boolean {
 	console.log("placePiece", coord.q, coord.r);
-	if (piece.owner !== this.currentPlayer) return false;
+		if (piece.owner !== this.currentPlayer) {
+		console.log("Move failed: not your move");
+		return false;
+	}
+	
 	if (!this.board.isEmpty(coord)) return false;
 
-	// first move(white)
+	// first move
 	if (this.board.pieces.length === 0) {
 		this.board.addPiece(piece, coord);
 		return true;
 	}
 
-	//second move(black)
+	//second move
 	if (this.board.pieces.length === 1) {
 		const neighbors = this.board.neighbors(coord);
 		const touching = neighbors.some(n => !this.board.isEmpty(n));
-		if (!touching) return false;
+		if (!touching) {
+			console.log("Move failed: hive not intact");
+			return false;
+		}
 
 		this.board.addPiece(piece, coord);
 		return true;
@@ -77,11 +84,15 @@ export class Game {
 		if (neighborPiece.owner === this.currentPlayer) {
 			touchesOwn = true;
 		} else {
+			console.log("Move failed: Should touch only own pieces");
 			return false;
 		}
 	}
 
-	if (!touchesOwn) return false;
+	if (!touchesOwn) {
+		console.log("Move failed: hive is not intact");
+		return false;
+	}
 
 	// check - 4th move- should be BEE
 	const samePlayerPieces = this.board.pieces.filter(
@@ -89,6 +100,7 @@ export class Game {
 	);
 	const hasQueen = samePlayerPieces.some(p => p.constructor.name === "QueenBee" || p.type === "bee");
 	if (!hasQueen && samePlayerPieces.length >= 3 && piece.constructor.name !== "QueenBee" && piece.type !== "bee") {
+		console.log("Move failed: Queen should be placed at 4 move");
 		return false;
 	}
 

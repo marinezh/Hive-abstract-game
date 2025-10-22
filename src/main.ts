@@ -105,6 +105,12 @@ canvas.addEventListener('click', (e) => {
         clickX >= b.x && clickX <= b.x + b.width &&
         clickY >= b.y && clickY <= b.y + b.height 
       ) {
+        if (!game.currentPlayer) {
+          game.currentPlayer = b.color;
+          console.log(`First player: ${game.currentPlayer}`);
+          document.getElementById('game-status')!.textContent =
+            `Game started — ${game.currentPlayer} moves first`;
+        }
         selected = { from: "bank", bankId: b.id, type: b.type, color: b.color };
         return;
       }
