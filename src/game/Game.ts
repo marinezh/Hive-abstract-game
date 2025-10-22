@@ -2,6 +2,7 @@ import { Board } from "../models/Board";
 import { Piece } from "../models/Piece";
 import type { Player } from "../models/Piece";
 import { showWinnerPopup } from "../popup";
+import { showError, topPieceAt, isTopPiece } from '../models/utils';
 
 // When you detect a win:
 showWinnerPopup("White"); // or showWinnerPopup("Black");
@@ -21,12 +22,12 @@ showWinnerPopup("White"); // or showWinnerPopup("Black");
 
 export class Game {
 	board: Board;
-	currentPlayer: Player;
+	currentPlayer: Player | null;
 	turnCount: number;
 
 	constructor() {
 		this.board = new Board();
-		this.currentPlayer = "White";
+		this.currentPlayer = null;
 		this.turnCount = 1;
 	}
 
@@ -36,6 +37,17 @@ export class Game {
 		this.turnCount++;
 	}
 
+	
+
+	// nextTurn(): void {
+	// 	this.currentPlayer = this.currentPlayer === "White" ? "Black" : "White";
+	// 	this.turnCount++;
+	// 	if (this.currentPlayer <- has no moves) {
+	// 		this.currentPlayer = this.currentPlayer === "White" ? "Black" : "White";
+	// 			this.turnCount++;
+	// 	}
+	// }
+
 	/**
 	 * Place a piece on the board if the move is valid.
 	 * Checks:
@@ -43,22 +55,31 @@ export class Game {
 	 *  - If not the very first move, new piece must touch at least one piece
 	 *  - QueenBee must be placed by each player's 4th turn
 	 */
-	placePiece(piece: Piece, coord: { q: number; r: number }): boolean {
+	placePiece(piece: Piece, coord: { q: number; r: number }): boolean { //when first bug placed climb you cant place anymore pieces
 	console.log("placePiece", coord.q, coord.r);
-	if (piece.owner !== this.currentPlayer) return false;
+		if (piece.owner !== this.currentPlayer) {
+		console.log("not your turn");
+		showError("❌ Not your turn!");
+		return false;
+	}
+	
 	if (!this.board.isEmpty(coord)) return false;
 
-	// first move(white)
+	// first move
 	if (this.board.pieces.length === 0) {
 		this.board.addPiece(piece, coord);
 		return true;
 	}
 
-	//second move(black)
+	//second move
 	if (this.board.pieces.length === 1) {
 		const neighbors = this.board.neighbors(coord);
 		const touching = neighbors.some(n => !this.board.isEmpty(n));
-		if (!touching) return false;
+		if (!touching) {
+			console.log("Move failed: Hive is not intact");
+			showError("❌ Hive is not intact!");
+			return false;
+		}
 
 		this.board.addPiece(piece, coord);
 		return true;
@@ -69,19 +90,25 @@ export class Game {
 	let touchesOwn = false;
 
 	for (const n of neighbors) {
-		const neighborPiece = this.board.pieces.find(
-			p => p.position.q === n.q && p.position.r === n.r
-		);
+		const neighborPiece = topPieceAt(this.board, n); 
+		// const neighborPiece = this.board.pieces.find(
+		// 	p => p.position.q === n.q && p.position.r === n.r
+		// );
 		if (!neighborPiece) continue;
-
 		if (neighborPiece.owner === this.currentPlayer) {
 			touchesOwn = true;
 		} else {
+			console.log("Move failed: You can place pieces next to your own, not your opponent’s.");
+			showError("❌ Piece must touch your color only!");
 			return false;
 		}
 	}
 
-	if (!touchesOwn) return false;
+	if (!touchesOwn) {
+		console.log("Move failed: hive is not intact");
+		showError("❌ Hive is not intact!");
+		return false;
+	}
 
 	// check - 4th move- should be BEE
 	const samePlayerPieces = this.board.pieces.filter(
@@ -89,6 +116,8 @@ export class Game {
 	);
 	const hasQueen = samePlayerPieces.some(p => p.constructor.name === "QueenBee" || p.type === "bee");
 	if (!hasQueen && samePlayerPieces.length >= 3 && piece.constructor.name !== "QueenBee" && piece.type !== "bee") {
+		console.log("Move failed: Queen should be placed at 4 move");
+		showError("❌ The Queen Bee must be placed by turn 4!");
 		return false;
 	}
 
@@ -129,6 +158,7 @@ export class Game {
 				// revert if the hive would break
 				piece.position = old;
 				console.log("Move failed: Hive not intact");
+				showError("❌ Hive is not intact!");
 				return false;
 			}
 		}
