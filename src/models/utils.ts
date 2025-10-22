@@ -31,14 +31,20 @@ export function canSlide(board: Board, from: HexCoord, to: HexCoord): boolean {
   return true;
 }
 
-// export function isTopPiece(piece: Piece, board: Board): boolean {
-//   const stack = board.getStackAt(piece.position);
-//   if (stack.length === 0) return false;  // no pieces, so no bottom piece
-//   const bottomPiece = stack[0];          // first piece in the stack is the bottom
-//   return bottomPiece === piece;
-// }
-
 export function isTopPiece(piece: Piece, board: Board): boolean {
   const stack = board.getStackAt(piece.position);
   return stack.length > 0 && stack[stack.length - 1] === piece;
+}
+
+export function topPieceAt(board: Board, coord: { q: number; r: number }): Piece | null {
+  const stack = board.getStackAt(coord); // get all pieces at this hex
+  if (!stack || stack.length === 0) return null; // empty hex
+  return stack[stack.length - 1]; // topmost piece
+}
+
+export function showError(message: string) {
+  const errorEl = document.getElementById('game-error');
+  if (!errorEl) return;
+  errorEl.textContent = message;
+  setTimeout(() => { errorEl.textContent = ''; }, 5000); // auto clear after 2.5s
 }

@@ -79,14 +79,6 @@ Open in browser at: [http://localhost:5173](http://localhost:5173)
 
 ---
 
-## ✨ Features to Add (Future Work)
-
-- online multiplayer.  
-- Drag and drop moves.  
-- User friendly message for forbidden move.
-
----
-
 ## 🚀 Deployment to GitHub Pages
 
 This project is configured for automatic deployment to GitHub Pages using the `gh-pages` package.
@@ -204,6 +196,11 @@ The `gh-pages` package automatically:
 3. Pushes to GitHub repository
 4. Triggers GitHub Pages rebuild
 
+---
 
+## ✨ Features to Add (Future Work)
+
+- Online multiplayer.  
+- Drag and drop moves.  
 
 ---

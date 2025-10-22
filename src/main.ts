@@ -5,7 +5,7 @@ import { Game } from './game/Game';
 import { drawPieceBanks, layoutBankPositions } from './game/PieceBank';
 import type { BankPiece } from './game/PieceBank';
 import { pixelToHex } from './game/hexUtils';
-import { isTopPiece } from './models/utils';
+import { isTopPiece, showError } from './models/utils';
 import { createPiece } from './models/createPiece';
 import { CanvasRenderer, loadPieceImage } from './game/CanvasRenderer';
 import {showWinnerPopup} from './popup'
@@ -91,6 +91,8 @@ function getMousePos(evt: MouseEvent, canvas: HTMLCanvasElement) {
   return { x, y };
 }
 
+
+
 // ---- CLICK HANDLER ----
 canvas.addEventListener('click', (e) => {
   const { x: clickX, y: clickY } = getMousePos(e, canvas);
@@ -140,6 +142,7 @@ canvas.addEventListener('click', (e) => {
       const radius = 6;                           //board radius
       if (Math.abs(target.q) > radius || Math.abs(target.r) > radius || Math.abs(target.q + target.r) > radius) {
         console.log("❌ Outside board bounds:", target);
+        showError("❌ Outside board bounds");
         selected = null;
         renderCanvasBoard();
         return;
