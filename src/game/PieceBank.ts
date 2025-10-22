@@ -12,11 +12,20 @@ export type BankPiece = {
 
 const pieceImages: Record<string, HTMLImageElement> = {};
 
+function getAssetPath(filename: string): string {
+  // For local development, assets are served from public/
+  // For production, they'll be served from the base URL  
+  const base = import.meta.env.BASE_URL || '/';
+  const fullPath = `${base}assets/${filename}`;
+  console.log('Loading asset:', fullPath); // Debug log
+  return fullPath;
+}
+
 export function loadPieceImage(type: BankPiece["type"], color: Player): HTMLImageElement {
   const key = `${type}_${color}`;
   if (!pieceImages[key]) {
     const img = new Image();
-    img.src = `./src/assets/${type}_${color.toLowerCase()}.png`;
+    img.src = getAssetPath(`${type}_${color.toLowerCase()}.png`);
     pieceImages[key] = img;
   }
   return pieceImages[key];
@@ -25,7 +34,13 @@ export function loadPieceImage(type: BankPiece["type"], color: Player): HTMLImag
 export function drawPieceBanks(bankPieces: BankPiece[], ctx: CanvasRenderingContext2D) {
   bankPieces.forEach(piece => {
     const img = loadPieceImage(piece.type, piece.color);
-    ctx.drawImage(img, piece.x, piece.y, piece.width, piece.height);
+    const { x, y, width, height } = piece;
+
+    // Only draw if image is loaded successfully, otherwise leave empty space
+    if (img.complete && img.naturalWidth > 0) {
+      ctx.drawImage(img, x, y, width, height);
+    }
+    // If image isn't loaded, just don't draw anything (empty space)
   });
 }
 

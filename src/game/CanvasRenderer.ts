@@ -133,11 +133,20 @@ import { Piece } from '../models/Piece';
 // 🔹 Global cache for piece images
 const pieceImages: Record<string, HTMLImageElement> = {};
 
+function getAssetPath(filename: string): string {
+  // For local development, assets are served from public/
+  // For production, they'll be served from the base URL
+  const base = import.meta.env.BASE_URL || '/';
+  const fullPath = `${base}assets/${filename}`;
+  console.log('Loading asset:', fullPath); // Debug log
+  return fullPath;
+}
+
 export function loadPieceImage(type: string, color: string): HTMLImageElement {
   const key = `${type}_${color}`;
   if (!pieceImages[key]) {
     const img = new Image();
-    img.src = `./src/assets/${type}_${color.toLowerCase()}.png`;
+    img.src = getAssetPath(`${type}_${color.toLowerCase()}.png`);
     pieceImages[key] = img;
   }
   return pieceImages[key];
@@ -235,21 +244,21 @@ export class CanvasRenderer {
     const { x, y } = this.hexToPixel(q, r);
     const size = this.size;
 
-    let typeKey = piece.constructor.name.toLowerCase();
-    if (typeKey.includes("queen")) typeKey = "bee";
-    else if (typeKey.includes("beetle")) typeKey = "beetle";
-    else if (typeKey.includes("spider")) typeKey = "spider";
-    else if (typeKey.includes("grass")) typeKey = "hopper";
-    else if (typeKey.includes("ant")) typeKey = "ant";
+    // Use piece.type directly for better reliability
+    const typeKey = piece.type || piece.constructor.name.toLowerCase();
 
     const img = loadPieceImage(typeKey, piece.owner);
 
-    this.ctx.drawImage(
-      img,
-      x - size * 0.9,
-      y - size * 0.9,
-      size * 1.8,
-      size * 1.8
-    );
+    // Only draw if image is loaded successfully, otherwise leave empty space
+    if (img.complete && img.naturalWidth > 0) {
+      this.ctx.drawImage(
+        img,
+        x - size * 0.9,
+        y - size * 0.9,
+        size * 1.8,
+        size * 1.8
+      );
+    }
+    // If image isn't loaded, just don't draw anything (empty space)
   }
 }

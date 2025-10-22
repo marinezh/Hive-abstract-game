@@ -83,5 +83,125 @@ Open in browser at: [http://localhost:5173](http://localhost:5173)
 - Drag and drop moves.  
 - User friendly message for forbidden move.
 
+---
+
+## 🚀 Deployment to GitHub Pages
+
+This project is configured for automatic deployment to GitHub Pages using the `gh-pages` package.
+
+### 🔧 Deployment Setup
+
+The project includes the following deployment configuration:
+
+**1. Vite Configuration (`vite.config.ts`)**
+```typescript
+export default defineConfig({
+  base: '/Hive-abstract-game/', // GitHub Pages subdirectory
+});
+```
+
+**2. Package.json Scripts**
+```json
+{
+  "scripts": {
+    "deploy": "gh-pages -d dist"
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
+  }
+}
+```
+
+**3. GitHub Pages Settings**
+- **Source**: Deploy from a branch
+- **Branch**: `gh-pages`
+- **Folder**: `/ (root)`
+
+### 📦 Deployment Process
+
+**Step 1: Build the Project**
+```bash
+npm run build
+```
+
+**Step 2: Deploy to GitHub Pages**
+```bash
+npm run deploy
+```
+
+**Step 3: Access Your Live Site**
+```
+https://<your-username>.github.io/Hive-abstract-game/
+```
+
+### 🔍 Technical Implementation Details
+
+#### Asset Path Resolution
+The deployment handles different asset paths between development and production:
+
+```typescript
+// Dynamic asset path detection
+function getAssetPath(filename: string): string {
+  const baseUrl = import.meta.env.BASE_URL || '/';
+  return `${baseUrl}assets/${filename}`;
+}
+```
+
+- **Development**: `./assets/image.png`
+- **Production**: `/Hive-abstract-game/assets/image.png`
+
+#### Image Loading Validation
+Canvas operations include proper image loading checks:
+
+```typescript
+// Ensure images are fully loaded before drawing
+if (img.complete && img.naturalHeight !== 0) {
+  ctx.drawImage(img, x, y, width, height);
+}
+```
+
+#### Production-Safe Code
+Queen Bee detection works in both development and minified production:
+
+```typescript
+// Dual property checking (constructor names get minified)
+const isQueen = piece.constructor.name === "QueenBee" || piece.type === "bee";
+```
+
+### 🛠️ Troubleshooting Deployment
+
+**Problem: Images not loading (404 errors)**
+- **Cause**: Hardcoded asset paths
+- **Solution**: Use dynamic `getAssetPath()` function
+
+**Problem: Canvas InvalidStateError**
+- **Cause**: Drawing images before they load
+- **Solution**: Check `img.complete` before canvas operations
+
+**Problem: Old version still showing**
+- **Cause**: Browser/CDN caching
+- **Solution**: Hard refresh (`Cmd+Shift+R`) or incognito mode
+```bash
+rm -rf dist && npm run build && npm run deploy
+
+### 🔄 Complete Deployment Workflow
+
+```bash
+# Clean build and deploy
+rm -rf dist
+npm run build
+npm run deploy
+
+# Or use the combined command
+npm run build && npm run deploy
+```
+
+The `gh-pages` package automatically:
+1. Creates/updates the `gh-pages` branch
+2. Copies built files from `dist/` folder
+3. Pushes to GitHub repository
+4. Triggers GitHub Pages rebuild
+
+**Live Demo**: [https://marinezh.github.io/Hive-abstract-game/](https://marinezh.github.io/Hive-abstract-game/)
 
 ---
