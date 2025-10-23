@@ -145,7 +145,7 @@ canvas.addEventListener('click', (e) => {
           bankPieces.splice(idx, 1);
           layoutBankPositions(bankPieces, width, dpr, pieceSize);
         }
-        // Check for win condition after placing a piece
+        // Check for win condition after placing a piece!!!!!!!!!!
         const winner = game.checkWin();
         if (winner) {
           console.log(`Winner: ${winner}`);
