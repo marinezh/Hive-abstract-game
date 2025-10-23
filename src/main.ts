@@ -183,7 +183,6 @@ canvas.addEventListener('click', (e) => {
 		if (winner) {
 		  console.log(`Winner: ${winner}`);
 		  showWinnerPopup(winner);
-      return;
 		}
 	}
 });
