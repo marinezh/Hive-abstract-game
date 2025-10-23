@@ -161,8 +161,18 @@ export class Game {
 		return true;
 	}
 
+	// checkWin(): Player | null {
+	// 	const queens = this.board.pieces.filter(p => p.constructor.name === "QueenBee");
+	// 	for (const q of queens) {
+	// 		const neighbors = this.board.neighbors(q.position);
+	// 		const surrounded = neighbors.every(n => !this.board.isEmpty(n));
+	// 		if (surrounded) return q.owner === "White" ? "Black" : "White";
+	// 	}
+	// 	return null;
+	// }
+
 	checkWin(): Player | null {
-		const queens = this.board.pieces.filter(p => p.constructor.name === "QueenBee");
+		const queens = this.board.pieces.filter(p => p.type === "QueenBee");
 		for (const q of queens) {
 			const neighbors = this.board.neighbors(q.position);
 			const surrounded = neighbors.every(n => !this.board.isEmpty(n));
@@ -170,4 +180,5 @@ export class Game {
 		}
 		return null;
 	}
+
 }
