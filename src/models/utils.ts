@@ -48,3 +48,53 @@ export function showError(message: string) {
   errorEl.textContent = message;
   setTimeout(() => { errorEl.textContent = ''; }, 5000); // auto clear after 2.5s
 }
+
+export function getMousePos(evt: MouseEvent, canvas: HTMLCanvasElement) {
+  const rect = canvas.getBoundingClientRect();
+  const x = (evt.clientX - rect.left);
+  const y = (evt.clientY - rect.top);
+  // Convert from CSS pixels to your logical coordinate system
+  return { x, y };
+}
+
+export function hasAvailableMoves(
+  board: Board,
+  player: "White" | "Black",
+  bankPieces: { color: string; type: string }[]
+): boolean {
+  // 1️⃣ Check if player still has pieces in the bank
+  const playerBankPieces = bankPieces.filter(p => p.color === player);
+  if (playerBankPieces.length > 0) {
+    const allCoords = board.allCoordsAroundHive();
+
+    for (const coord of allCoords) {
+      if (!board.isEmpty(coord)) continue;
+
+      const neighbors = board.neighbors(coord)
+        .map(n => topPieceAt(board, n))
+        .filter((p): p is Piece => p !== null);
+
+      if (neighbors.length === 0) continue;
+
+      const touchesOwn = neighbors.some(n => n.owner === player);
+      const touchesOpponent = neighbors.some(n => n.owner !== player);
+
+      if (touchesOwn && !touchesOpponent) {
+        return true; // ✅ legal placement available
+      }
+    }
+  }
+
+  // 2️⃣ Check if any top piece of this player can move
+  for (const piece of board.pieces) {
+    if (piece.owner !== player) continue;
+    if (!isTopPiece(piece, board)) continue;
+
+    if (piece.legalMoves(board).length > 0) {
+      return true; // ✅ move exists
+    }
+  }
+
+  // 🚫 No legal moves found
+  return false;
+}

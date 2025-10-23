@@ -1,4 +1,5 @@
 import type { HexCoord, Piece } from "./Piece";
+import { topPieceAt } from './utils';
 
 export class Board {
   pieces: Piece[] = [];
@@ -119,6 +120,24 @@ export class Board {
 
   addDir(coord: HexCoord, dir: HexCoord): HexCoord {
     return { q: coord.q + dir.q, r: coord.r + dir.r };
+  }
+
+  allCoordsAroundHive(): HexCoord[] {
+    const coords = new Set<string>();
+    for (const p of this.pieces) {
+      const top = topPieceAt(this, p.position);
+      if (!top) continue;
+
+      for (const n of this.neighbors(p.position)) {
+        if (this.isEmpty(n)) {
+          coords.add(`${n.q},${n.r}`);
+        }
+      }
+    }
+    return Array.from(coords).map(s => {
+      const [q, r] = s.split(',').map(Number);
+      return { q, r };
+    });
   }
 
 }
