@@ -145,6 +145,13 @@ canvas.addEventListener('click', (e) => {
           bankPieces.splice(idx, 1);
           layoutBankPositions(bankPieces, width, dpr, pieceSize);
         }
+        // Check for win condition after placing a piece!!!!!!!!!!
+        const winner = game.checkWin();
+        if (winner) {
+          console.log(`Winner: ${winner}`);
+          showWinnerPopup(winner);
+          return;
+        }
         if (game.board.pieces.length > 2) {
           const next = game.currentPlayer === "White" ? "Black" : "White";
           if (!hasAvailableMoves(game.board, next, bankPieces)) {
