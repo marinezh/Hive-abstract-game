@@ -13,6 +13,7 @@ import { canSlide } from "./utils";
  */
 export class Spider extends Piece {
   readonly type = "spider";
+
   legalMoves(board: Board): HexCoord[] {
     const results: HexCoord[] = [];
 

@@ -2,7 +2,7 @@ import { Board } from "../models/Board";
 import { Piece } from "../models/Piece";
 import type { Player } from "../models/Piece";
 import { showWinnerPopup } from "../popup";
-import { showError, topPieceAt, isTopPiece } from '../models/utils';
+import { showError, topPieceAt } from '../models/utils';
 
 // When you detect a win:
 showWinnerPopup("White"); // or showWinnerPopup("Black");
@@ -35,18 +35,9 @@ export class Game {
 	nextTurn(): void {
 		this.currentPlayer = this.currentPlayer === "White" ? "Black" : "White";
 		this.turnCount++;
+
+		
 	}
-
-	
-
-	// nextTurn(): void {
-	// 	this.currentPlayer = this.currentPlayer === "White" ? "Black" : "White";
-	// 	this.turnCount++;
-	// 	if (this.currentPlayer <- has no moves) {
-	// 		this.currentPlayer = this.currentPlayer === "White" ? "Black" : "White";
-	// 			this.turnCount++;
-	// 	}
-	// }
 
 	/**
 	 * Place a piece on the board if the move is valid.
@@ -123,6 +114,7 @@ export class Game {
 
 	this.board.addPiece(piece, coord);
 	this.board.updateStackLevelsAt(coord);
+
 	return true;
 }
 

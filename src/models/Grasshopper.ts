@@ -11,23 +11,7 @@ import type { Board } from "./Board";
  */
 export class Grasshopper extends Piece {
   readonly type = "hopper";
-  // legalMoves(board: Board): HexCoord[] {
-  //   const moves: HexCoord[] = [];
 
-  //   for (const dir of board.directions()) {
-  //     let next = board.addDir(this.position, dir);
-  //     let jumped = false;
-
-  //     while (!board.isEmpty(next)) {
-  //       jumped = true;
-  //       next = board.addDir(next, dir); // move one step further in the same direction
-  //     }
-
-  //     if (jumped) moves.push(next);
-  //   }
-
-  //   return moves;
-  // }
   legalMoves(board: Board): HexCoord[] {
     const moves: HexCoord[] = [];
     const radius = 6; // match your board radius

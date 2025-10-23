@@ -5,7 +5,7 @@ import { Game } from './game/Game';
 import { drawPieceBanks, layoutBankPositions } from './game/PieceBank';
 import type { BankPiece } from './game/PieceBank';
 import { pixelToHex } from './game/hexUtils';
-import { isTopPiece, showError } from './models/utils';
+import { isTopPiece, showError, getMousePos, hasAvailableMoves } from './models/utils';
 import { createPiece } from './models/createPiece';
 import { CanvasRenderer, loadPieceImage } from './game/CanvasRenderer';
 import {showWinnerPopup} from './popup'
@@ -83,16 +83,6 @@ function initPieceBanks() {
 	layoutBankPositions(bankPieces, width, dpr, pieceSize);
 }
 
-function getMousePos(evt: MouseEvent, canvas: HTMLCanvasElement) {
-  const rect = canvas.getBoundingClientRect();
-  const x = (evt.clientX - rect.left);
-  const y = (evt.clientY - rect.top);
-  // Convert from CSS pixels to your logical coordinate system
-  return { x, y };
-}
-
-
-
 // ---- CLICK HANDLER ----
 canvas.addEventListener('click', (e) => {
   const { x: clickX, y: clickY } = getMousePos(e, canvas);
@@ -155,12 +145,28 @@ canvas.addEventListener('click', (e) => {
           bankPieces.splice(idx, 1);
           layoutBankPositions(bankPieces, width, dpr, pieceSize);
         }
-          game.nextTurn(); 
+        if (game.board.pieces.length > 2) {
+          const next = game.currentPlayer === "White" ? "Black" : "White";
+          if (!hasAvailableMoves(game.board, next, bankPieces)) {
+            console.log(`${next} has no legal moves — skipping turn`);
+            showError(`⚠️ ${next} has no legal moves — turn skipped!`); // CHECK PLAYERS TURN!!!
+          } else {
+            game.nextTurn();
+          }
+        } else {
+          game.nextTurn();
+        }
       }
     } else if (sel.from === "board") {            /// BOARD
       if (game.movePiece(sel.ref, target)) {
         console.log("Move successful");
-        game.nextTurn();
+        const next = game.currentPlayer === "White" ? "Black" : "White";
+        if (!hasAvailableMoves(game.board, next, bankPieces)) {
+          console.log(`${next} has no legal moves — skipping turn`);
+          showError(`⚠️ ${next} has no legal moves — turn skipped!`); // CHECK PLAYERS TURN!!!
+        } else {
+          game.nextTurn();
+        }
       } else {
         console.log("Move failed");
       }
@@ -279,8 +285,3 @@ initPieceBanks();
 renderCanvasBoard();
 document.getElementById("game-container")?.classList.remove("hidden");
 document.body.classList.add("ready");
-
-//Logs for Fails to screen
-//Anyone move first
-
-//  Probably images... or not
