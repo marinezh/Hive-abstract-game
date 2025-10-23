@@ -162,6 +162,7 @@ export class Game {
 	}
 
 	// checkWin(): Player | null {
+	// 	console.log(p.owner, p.type, p.name, p.constructor?.name, p.position)
 	// 	const queens = this.board.pieces.filter(p => p.constructor.name === "QueenBee");
 	// 	for (const q of queens) {
 	// 		const neighbors = this.board.neighbors(q.position);
@@ -170,15 +171,35 @@ export class Game {
 	// 	}
 	// 	return null;
 	// }
-
+	
 	checkWin(): Player | null {
-		const queens = this.board.pieces.filter(p => p.type === "QueenBee");
-		for (const q of queens) {
-			const neighbors = this.board.neighbors(q.position);
-			const surrounded = neighbors.every(n => !this.board.isEmpty(n));
-			if (surrounded) return q.owner === "White" ? "Black" : "White";
-		}
-		return null;
+	this.board.pieces.forEach(p => {
+		    console.log(
+      p.owner,
+      p.type,
+      (p as any).name,
+      p.constructor?.name,
+      p.position
+    );
+	});
+
+	const queens = this.board.pieces.filter(p => p.type === "bee" || p.constructor.name === "QueenBee");
+	for (const q of queens) {
+		const neighbors = this.board.neighbors(q.position);
+		const surrounded = neighbors.every(n => !this.board.isEmpty(n));
+		if (surrounded) return q.owner === "White" ? "Black" : "White";
 	}
+	return null;
+	}
+
+	// checkWin(): Player | null {
+	// 	const queens = this.board.pieces.filter(p => p.type === "QueenBee");
+	// 	for (const q of queens) {
+	// 		const neighbors = this.board.neighbors(q.position);
+	// 		const surrounded = neighbors.every(n => !this.board.isEmpty(n));
+	// 		if (surrounded) return q.owner === "White" ? "Black" : "White";
+	// 	}
+	// 	return null;
+	// }
 
 }
