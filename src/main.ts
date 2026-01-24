@@ -38,6 +38,35 @@ const { canvas, renderer } = setupCanvas(
 );
 
 // ===============================
+// 📌 PRELOAD IMAGES
+// ===============================
+function preloadImages(): Promise<void> {
+  const types = ["bee", "spider", "beetle", "hopper", "ant"];
+  const colors = ["black", "white"];
+  const promises: Promise<void>[] = [];
+
+  types.forEach(type => {
+    colors.forEach(color => {
+      const img = new Image();
+      const base = import.meta.env.BASE_URL || '/';
+      img.src = `${base}assets/${type}_${color}.png`;
+      
+      const promise = new Promise<void>((resolve) => {
+        img.onload = () => resolve();
+        img.onerror = () => {
+          console.warn(`Failed to load: ${img.src}`);
+          resolve(); // Resolve anyway to not block
+        };
+      });
+      
+      promises.push(promise);
+    });
+  });
+
+  return Promise.all(promises).then(() => {});
+}
+
+// ===============================
 // 📌 GAME INITIALIZATION
 // ===============================
 
@@ -330,27 +359,52 @@ function updateCameraIfNeeded(board: Board, renderer: CanvasRenderer) {
 }
 
 // ===============================
-// INITIAL RENDER
+// 📌 INITIALIZE APP AFTER IMAGES LOAD
 // ===============================
-renderCanvasBoard(
-  renderer,
-  game.board,
-  game.bank,
-  hoveredHex,
-  selected,
-  game.validMoves,
-  mousePos,
-  HEX_SIZE
-);
+async function initializeApp() {
+  // Wait for all images to load
+  await preloadImages();
+  
+  // Now render the board with loaded images
+  renderCanvasBoard(
+    renderer,
+    game.board,
+    game.bank,
+    hoveredHex,
+    selected,
+    game.validMoves,
+    mousePos,
+    HEX_SIZE
+  );
 
-document.getElementById("game-container")?.classList.remove("hidden");
-document.body.classList.add("ready");
+  document.getElementById("game-container")?.classList.remove("hidden");
+  document.body.classList.add("ready");
+
+  // Attach UI events
+  initUIEvents(canvas, game.bank, renderer, {
+    onHexClick: handleHexClick,
+    onBankClick: handleBankClick,
+    onHoverHex: handleHover
+  });
+}
+
+// Start the app
+initializeApp();
 
 // ===============================
-// 📌 ATTACH UI EVENTS
+// 📌 OLD CODE - MOVED INTO initializeApp()
 // ===============================
-initUIEvents(canvas, game.bank, renderer, {
-  onHexClick: handleHexClick,
-  onBankClick: handleBankClick,
-  onHoverHex: handleHover
-});
+// renderCanvasBoard(
+//   renderer,
+//   game.board,
+//   game.bank,
+//   hoveredHex,
+//   selected,
+//   game.validMoves,
+//   mousePos,
+//   HEX_SIZE
+// );
+
+// document.getElementById("game-container")?.classList.remove("hidden");
+// document.body.classList.add("ready");
+
