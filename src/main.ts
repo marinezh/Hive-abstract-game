@@ -28,9 +28,9 @@ import { AIController } from "./agent/aiController";
 const width = 1000;
 const height = 750;
 const HEX_SIZE = 25;
-const pieceSize = 30;
+const pieceSize = 45;  // Match board pieces: HEX_SIZE * 1.8 = 45
 
-const { canvas, renderer, dpr } = setupCanvas(
+const { canvas, renderer } = setupCanvas(
   "hive-canvas",
   width,
   height,
@@ -42,7 +42,7 @@ const { canvas, renderer, dpr } = setupCanvas(
 // ===============================
 
 const game = new Game();
-layoutBankPositions(game.bank, width, dpr, pieceSize);
+layoutBankPositions(game.bank, width, pieceSize);
 let selected:
 	| { from: "bank"; bankId: string; type: BankPiece["type"]; color: Player }
 	| { from: "board"; ref: Piece }
@@ -181,7 +181,7 @@ function placeFromBank(hex: { q: number; r: number }) {
       const idx = game.bank.findIndex((p) => p.id === sel.bankId);
       if (idx !== -1) {
         game.bank.splice(idx, 1);
-        layoutBankPositions(game.bank, width, dpr, pieceSize);
+        layoutBankPositions(game.bank, width, pieceSize);
       }
       updateCameraIfNeeded(game.board, renderer);
       nextTurnOrSkip();

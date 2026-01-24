@@ -47,14 +47,13 @@ export function drawPieceBanks(bankPieces: BankPiece[], ctx: CanvasRenderingCont
 export function layoutBankPositions(
   bankPieces: BankPiece[],
   canvasWidth: number,
-  dpr: number,
   pieceSize: number
 ) {
-  // --- Work entirely in canvas pixel units ---
-  const leftX = 20 * dpr;
-  const rightX = canvasWidth - pieceSize * dpr - 20 * dpr;
-  const startY = 60 * dpr;
-  const gapY = (pieceSize + 10) * dpr;
+  // --- Work in logical (CSS) pixels - canvas context already handles DPR ---
+  const leftX = 20;
+  const rightX = canvasWidth - pieceSize - 20;
+  const startY = 60;
+  const gapY = pieceSize + 10;
 
   let yBlack = startY;
   let yWhite = startY;
@@ -72,16 +71,16 @@ export function layoutBankPositions(
   blackPieces.forEach(p => {
     p.x = leftX;
     p.y = yBlack;
-    p.width = pieceSize * dpr;
-    p.height = pieceSize * dpr;
+    p.width = pieceSize;
+    p.height = pieceSize;
     yBlack += gapY;
   });
 
   whitePieces.forEach(p => {
     p.x = rightX;
     p.y = yWhite;
-    p.width = pieceSize * dpr;
-    p.height = pieceSize * dpr;
+    p.width = pieceSize;
+    p.height = pieceSize;
     yWhite += gapY;
   });
 }
