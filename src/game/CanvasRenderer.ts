@@ -59,7 +59,7 @@ export class CanvasRenderer {
     // Reset transform to identity and clear using PHYSICAL sizes
     this.ctx.save();
     this.ctx.setTransform(1, 0, 0, 1, 0, 0);
-    this.ctx.fillStyle = '#000000';
+    this.ctx.fillStyle = '#050504';
     this.ctx.fillRect(0, 0, this.physicalWidth, this.physicalHeight);
     this.ctx.restore();
   }

@@ -26,7 +26,7 @@ import { AIController } from "./agent/aiController";
 //  CANVAS SETUP
 // ===============================
 const width = 1000;
-const height = 750;
+const height = 800;
 const HEX_SIZE = 25;
 const pieceSize = 30;
 
@@ -55,8 +55,7 @@ if (localStorage.getItem("playAgainstAI") === "true") {
   ai.enable();
   game.aiEnabled = true;
   game.aiPlays = "Black";
-
-  document.getElementById("play_against_ai")!.textContent = "AI: ON";
+  document.querySelector(".toggle")?.classList.add('active');
   showError("🤖 Playing against AI");
 }
 let hoveredHex: { q: number, r: number } | null = null;
@@ -227,11 +226,11 @@ function nextTurnOrSkip() {
   game.validMoves = [];
 
   document.getElementById("game-status")!.textContent =
-    `Next move: ${game.currentPlayer}`;
+    `${game.currentPlayer}`;
 
   // Trigger AI AFTER UI updates
   if (ai.isEnabled && game.currentPlayer === game.aiPlays) {
-    setTimeout(() => ai.makeMoveIfNeeded(), 200);
+    setTimeout(() => ai.makeMoveIfNeeded(), 2000);
   }
   const winner = game.checkWin();
   if (winner) {
@@ -275,7 +274,6 @@ document.getElementById("play_against_ai")!
       game.aiEnabled = false;
       localStorage.removeItem("playAgainstAI");
 
-      document.getElementById("play_against_ai")!.textContent = "AI: OFF";
       showError("❌ AI Disabled");
       return;
     }
@@ -284,9 +282,15 @@ document.getElementById("play_against_ai")!
     localStorage.setItem("playAgainstAI", "true");
     showError("🤖 AI Enabled — restarting game…");
 
-    setTimeout(() => {
-      location.reload();
-    }, 300);
+    // setTimeout(() => {
+    //   location.reload();
+    // }, 1000);
+    ai.enable();
+    game.aiEnabled = true;
+    game.aiPlays = "Black";
+    localStorage.setItem("playAgainstAI", "true");
+    document.querySelector(".toggle")?.classList.add('active');
+    showError("🤖 AI Enabled");
 });
 
 // ===============================
@@ -342,3 +346,26 @@ initUIEvents(canvas, game.bank, renderer, {
   onBankClick: handleBankClick,
   onHoverHex: handleHover
 });
+// Toggle button event
+document.querySelector(".toggle")?.addEventListener("click", Animatedtoggle);
+
+// function Animatedtoggle(){
+//   const toggle = document.querySelector(".toggle");
+//   const text = document.querySelector(".text");
+  
+//   if (!toggle || !text) return; // Safety check
+  
+//   toggle.classList.toggle('active');
+
+//   if(toggle.classList.contains('active')){
+//     text.innerHTML = "ON";
+//   } else { 
+//     text.innerHTML = "OFF";
+//   }
+// }
+
+function Animatedtoggle(){
+  const toggle = document.querySelector(".toggle");
+  if (!toggle) return;
+  toggle.classList.toggle('active');
+}

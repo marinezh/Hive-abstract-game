@@ -149,8 +149,11 @@ body {
 
 #hive-canvas {
 	display: block;
-	margin: 0 auto; 
 	margin-bottom: 50px;
+	border-radius: 10px;
+	border:2px solid #ffe066; 
+	display:block; 
+	margin:auto;
 }
 
 .center-container {
@@ -225,12 +228,6 @@ body {
 
 #close-popup:hover {
 	color: #ffffff;
-}
-
-button
-{
-	margin-left: 40px;
-	background-color: #ffe066;
 }
 
 .rules {
@@ -432,4 +429,73 @@ footer .author-link {
 
 footer .author-link:hover {
 	text-decoration: underline;
+}
+
+/* #play_against_ai{
+	border-radius: 10%;
+	background-color: #ffe066;
+} */
+
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  width: 60px;
+  height: 30px;
+  background-color: #555;
+  border-radius: 30px;
+  padding: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.toggle-btn {
+  width: 24px;
+  height: 24px;
+  background-color: white;
+  border-radius: 50%;
+  transition: transform 0.3s;
+}
+
+.toggle.active {
+  background-color: #4CAF50;
+}
+
+.toggle.active .toggle-btn {
+  transform: translateX(30px);
+}
+
+.text {
+  display: none;
+}
+
+#game-error {
+	text-align: center;
+	font-family: 'Poppins', sans-serif;
+	color: #ff4d4d;
+	margin-top: 10px;
+	min-height: 24px;
+	font-size: 18px;
+}
+
+.info {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	width: 960px;
+
+	
+	/* border:2px solid #ffe066;  */
+	margin-bottom:20px;
+	border-radius: 10px;
+	padding: 20px
+}
+
+.info-section {
+	display: flex;
+	flex-direction: column;
+	align-items: center;	
+}
+h3 {
+	color:#ffe066;
 }
