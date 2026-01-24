@@ -229,6 +229,18 @@ function nextTurnOrSkip() {
   document.getElementById("game-status")!.textContent =
     `Next move: ${game.currentPlayer}`;
 
+  // Re-render the board to show changes
+  renderCanvasBoard(
+    renderer,
+    game.board,
+    game.bank,
+    hoveredHex,
+    selected,
+    game.validMoves,
+    mousePos,
+    HEX_SIZE
+  );
+
   // Trigger AI AFTER UI updates
   if (ai.isEnabled && game.currentPlayer === game.aiPlays) {
     setTimeout(() => ai.makeMoveIfNeeded(), 200);
