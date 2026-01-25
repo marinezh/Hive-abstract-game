@@ -188,20 +188,15 @@ body {
 	align-items: center;    
 }
 
-/* #game-status {
-	font-family: 'Poppins', sans-serif;
-	color: #ff4d4d;
-	min-height: 1.5em; 
-	font-size: 1.2em;
-	font-weight: 700;
-} */
-
 #game-error,
 #game-status {
 	font-family: 'Poppins', sans-serif;
 	color: #ff4d4d;
-	min-height: 24px;
+	width: 100%;
 	font-size: 16px;
+	line-height: 1.4;
+	height: calc(1.4em * 3);   /* reserve 3 lines */
+  	overflow: hidden;     
 }
 
 /* Overlay covers the screen */
