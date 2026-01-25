@@ -20,6 +20,31 @@
 	font-family: "JLR Bizzy Beez", sans-serif;
 }
 
+html {
+	margin: 0;
+	padding: 0;
+	background: #000000;
+	overflow-y: scroll !important; /* Force scrollbar */
+}
+body {
+	margin: 0;
+	padding: 0;
+	background: #000000;
+	visibility: hidden;
+	overflow-y: scroll !important; /* Force scrollbar */
+}
+body.ready {
+	visibility: visible;
+}
+footer {
+	text-align: center;
+	color: #ffe066;
+	padding: 10px;
+	width: 100%;
+	background: #000000;
+	margin-top: 20px;
+}
+
 h1 {
 	color: #ffe066;
 	font-size: 3rem;
@@ -153,7 +178,7 @@ body {
 	border-radius: 10px;
 	border:2px solid #ffe066; 
 	display:block; 
-	margin:auto;
+	margin-bottom: 50px;
 }
 
 .center-container {
@@ -161,16 +186,22 @@ body {
 	flex-direction: column;
 	justify-content: center;   
 	align-items: center;    
-	margin-top: 50px;
-	margin-bottom: 20px
 }
 
-#game-status {
-	color: #ffe066;
+/* #game-status {
+	font-family: 'Poppins', sans-serif;
+	color: #ff4d4d;
 	min-height: 1.5em; 
-	text-align: center;
 	font-size: 1.2em;
-	font-weight: 800;
+	font-weight: 700;
+} */
+
+#game-error,
+#game-status {
+	font-family: 'Poppins', sans-serif;
+	color: #ff4d4d;
+	min-height: 24px;
+	font-size: 16px;
 }
 
 /* Overlay covers the screen */
@@ -440,62 +471,63 @@ footer .author-link:hover {
 .toggle {
   display: inline-flex;
   align-items: center;
-  width: 60px;
-  height: 30px;
+  width: 50px;
+  height: 25px;
   background-color: #555;
-  border-radius: 30px;
+  border-radius: 20px;
   padding: 3px;
   cursor: pointer;
   transition: background-color 0.3s;
+  user-select: none; /* Prevent text selection on click */
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+  outline: none; /* Remove focus outline */
+  border: none; /* Remove any border */
+  position: relative; /* Ensure stable positioning */
 }
 
 .toggle-btn {
   width: 24px;
   height: 24px;
-  background-color: white;
+  background-color: rgb(8, 8, 8);
   border-radius: 50%;
-  transition: transform 0.3s;
+  transition: transform 0.4s;
 }
 
 .toggle.active {
-  background-color: #4CAF50;
+  background-color: #ffe066;
 }
 
 .toggle.active .toggle-btn {
-  transform: translateX(30px);
+  transform: translateX(25px);
 }
 
 .text {
   display: none;
 }
 
-#game-error {
-	text-align: center;
-	font-family: 'Poppins', sans-serif;
-	color: #ff4d4d;
-	margin-top: 10px;
-	min-height: 24px;
-	font-size: 18px;
-}
-
 .info {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-around;
-	width: 960px;
-
-	
-	/* border:2px solid #ffe066;  */
+	gap: 150px;
 	margin-bottom:20px;
 	border-radius: 10px;
-	padding: 20px
+	position: relative; /* Stable positioning */
 }
 
 .info-section {
 	display: flex;
 	flex-direction: column;
-	align-items: center;	
+	align-items: left;
+	width: 200px;
+	min-height: 60px; /* Prevent height changes */
 }
-h3 {
+.info > div:first-child {
+	width: 60px;
+}
+.info > div:nth-child(-n + 2){
+	width: 160px;
+}
+.title {
 	color:#ffe066;
 }

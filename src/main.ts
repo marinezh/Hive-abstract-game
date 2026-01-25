@@ -85,7 +85,8 @@ if (localStorage.getItem("playAgainstAI") === "true") {
   game.aiEnabled = true;
   game.aiPlays = "Black";
   document.querySelector(".toggle")?.classList.add('active');
-  showError("🤖 Playing against AI");
+  // showError("🤖 Playing against AI");
+  showError("🤖 AI on");
 }
 let hoveredHex: { q: number, r: number } | null = null;
 
@@ -130,7 +131,7 @@ if (game.aiEnabled) {
     game.currentPlayer = b.color;
     console.log(`First player: ${game.currentPlayer}`);
     document.getElementById('game-status')!.textContent =
-      `Game started — ${game.currentPlayer} moves first`;
+      `${game.currentPlayer} moves first`;
   }
 
   selected = { from: "bank", bankId: b.id, type: b.type, color: b.color };
@@ -255,7 +256,7 @@ function nextTurnOrSkip() {
   game.validMoves = [];
 
   document.getElementById("game-status")!.textContent =
-    `Next move: ${game.currentPlayer}`;
+    `${game.currentPlayer}`;
 
   // Re-render the board to show changes
   renderCanvasBoard(
@@ -271,7 +272,7 @@ function nextTurnOrSkip() {
 
   // Trigger AI AFTER UI updates
   if (ai.isEnabled && game.currentPlayer === game.aiPlays) {
-    setTimeout(() => ai.makeMoveIfNeeded(), 2000);
+    setTimeout(() => ai.makeMoveIfNeeded(), 1000);
   }
   const winner = game.checkWin();
   if (winner) {
@@ -306,32 +307,35 @@ function handleHover(
 //   AI 
 // ===============================
 
+// ===============================
+//   AI TOGGLE
+// ===============================
+
 document.getElementById("play_against_ai")!
-  .addEventListener("click", () => {
+  .addEventListener("click", (e) => {
+    e.preventDefault(); // Prevent any default behavior
+    e.stopPropagation(); // Stop event bubbling
+    
+    const toggle = document.querySelector(".toggle");
 
-    // If AI already ON → turn it OFF without reload
+    // If AI already ON → turn it OFF and reload
     if (ai.isEnabled) {
-      ai.disable();
-      game.aiEnabled = false;
       localStorage.removeItem("playAgainstAI");
-
-      showError("❌ AI Disabled");
+      toggle?.classList.remove('active');
+      
+      setTimeout(() => {
+        location.reload();
+      }, 350);
       return;
     }
 
-    // AI is being enabled → SAVE + RELOAD
+    // AI is being enabled → save and reload
     localStorage.setItem("playAgainstAI", "true");
-    showError("🤖 AI Enabled — restarting game…");
-
-    // setTimeout(() => {
-    //   location.reload();
-    // }, 1000);
-    ai.enable();
-    game.aiEnabled = true;
-    game.aiPlays = "Black";
-    localStorage.setItem("playAgainstAI", "true");
-    document.querySelector(".toggle")?.classList.add('active');
-    showError("🤖 AI Enabled");
+    toggle?.classList.add('active');
+    
+    setTimeout(() => {
+      location.reload();
+    }, 350);
 });
 
 // ===============================
@@ -391,16 +395,6 @@ async function initializeApp() {
     onHoverHex: handleHover
   });
 }
-
-// Toggle button handler
-function Animatedtoggle(){
-  const toggle = document.querySelector(".toggle");
-  if (!toggle) return;
-  toggle.classList.toggle('active');
-}
-
-// Toggle button event
-document.querySelector(".toggle")?.addEventListener("click", Animatedtoggle);
 
 // Start the app
 initializeApp();

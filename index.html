@@ -11,26 +11,6 @@
 
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>Hive Game</title>
-		<style>
-			html, body {
-				margin: 0;
-				height: 100%;
-				background: #000000;  
-				visibility: hidden;
-			}
-			body.ready {
-				visibility: visible;
-			}
-			footer {
-				text-align: center;
-				color: #ffe066;
-				padding: 10px;
-				position: fixed;
-				bottom: 0;
-				width: 100%;
-				background: #000000;
-			}
-		</style>
 		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 	</head>
@@ -38,84 +18,79 @@
 		<div id="game-container" class="hidden">
 			<div class="center-container">
 				<h1 class="bee-text">Hive Game</h1>
-				<div>
-					<div class="rules">
-						<button id="show-rules">Rules</button>
-					</div>
-					<!-- Overlay for rules popup -->
-					<div id="popup-rules" class="popup-overlay hidden">
-						<div class="popup-content">
-							<span id="close-rules" class="popup-close">&times;</span>
-							<section id="rules" aria-labelledby="rules-title">
-								<h2 id="rules-title">Hive Rules</h2>
+				<div class="rules">
+					<button id="show-rules">Rules</button>
+				</div>
+				<!-- Overlay for rules popup -->
+				<div id="popup-rules" class="popup-overlay hidden">
+					<div class="popup-content">
+						<span id="close-rules" class="popup-close">&times;</span>
+						<section id="rules" aria-labelledby="rules-title">
+							<h2 id="rules-title">Hive Rules</h2>
 
-								<ol class="rules-list">
-								<li>
-									<h3>Placement</h3>
-									<p>New pieces must touch at least one of your own pieces.</p>
-									<p>They cannot be placed touching an opponent’s piece directly.</p>
-								</li>
+							<ol class="rules-list">
+							<li>
+								<h3>Placement</h3>
+								<p>New pieces must touch at least one of your own pieces.</p>
+								<p>They cannot be placed touching an opponent’s piece directly.</p>
+							</li>
 
-								<li>
-									<h3>Queen Bee Rule</h3>
-									<p>You must place your Queen Bee by your 4th turn.</p>
-									<p>No pieces may be moved until your Queen is placed.</p>
-								</li>
+							<li>
+								<h3>Queen Bee Rule</h3>
+								<p>You must place your Queen Bee by your 4th turn.</p>
+								<p>No pieces may be moved until your Queen is placed.</p>
+							</li>
 
-								<li>
-									<h3>One Hive Rule</h3>
-									<p>The hive must always remain a single connected group.</p>
-									<p>You cannot move a piece if it would split the hive.</p>
-								</li>
+							<li>
+								<h3>One Hive Rule</h3>
+								<p>The hive must always remain a single connected group.</p>
+								<p>You cannot move a piece if it would split the hive.</p>
+							</li>
 
-								<li>
-									<h3>Freedom to Move</h3>
-									<p>Sliding pieces must have physical space to move.</p>
-									<p>If both sides are blocked, you cannot slide in or out.</p>
-								</li>
+							<li>
+								<h3>Freedom to Move</h3>
+								<p>Sliding pieces must have physical space to move.</p>
+								<p>If both sides are blocked, you cannot slide in or out.</p>
+							</li>
 
-								<li>
-									<h3>Stacking (Beetle Only)</h3>
-									<p>Only Beetles can climb.</p>
-									<p>A Beetle on top controls the stack; covered pieces cannot move until uncovered.</p>
-								</li>
-								<li>
-									<h3>
-										🪲 Movement of Each Bug
-									</h3>
-									<p>Queen Bee 🐝 – Moves exactly 1 space (sliding).</p>
-									<p>Soldier Ant 🐜 – Moves to any distance around the hive, sliding freely.</p>
-									<p>Beetle 🪲 – Moves 1 space (like Queen) but can climb on top of other pieces.</p>
-									<p> Grasshopper 🦗 – Jumps in a straight line over one or more pieces, landing in the first empty space. Must jump over at least one piece. </p>
-									<p> Spider 🕷️ – Moves exactly 3 spaces, sliding around the hive. Cannot backtrack or stop early </p>
-								</li>
-								</ol>
-							</section>
+							<li>
+								<h3>Stacking (Beetle Only)</h3>
+								<p>Only Beetles can climb.</p>
+								<p>A Beetle on top controls the stack; covered pieces cannot move until uncovered.</p>
+							</li>
+							<li>
+								<h3>
+									🪲 Movement of Each Bug
+								</h3>
+								<p>Queen Bee 🐝 – Moves exactly 1 space (sliding).</p>
+								<p>Soldier Ant 🐜 – Moves to any distance around the hive, sliding freely.</p>
+								<p>Beetle 🪲 – Moves 1 space (like Queen) but can climb on top of other pieces.</p>
+								<p> Grasshopper 🦗 – Jumps in a straight line over one or more pieces, landing in the first empty space. Must jump over at least one piece. </p>
+								<p> Spider 🕷️ – Moves exactly 3 spaces, sliding around the hive. Cannot backtrack or stop early </p>
+							</li>
+							</ol>
+						</section>
 
-						</div>
 					</div>
 				</div>
 				<div class="info">
 					<div class="info-section">
-						<h3>AI</h3>
+						<p class="title">AI</p>
 						<div class="toggle" id="play_against_ai">
 							<div class="toggle-btn"></div>
-        				</div>
+	    				</div>
 					</div>
 					<div class="info-section">
-						<h3>Next Move</h3>
+						<p class="title">Next Move</p>
 						<div id="game-status"></div>
 					</div>
 					<div class="info-section">
-						<h3>Comments</h3>
-						<div id="game-error">
+						<p class="title">Comments</p>
+						<div id="game-error"></div>
 					</div>
 				</div>
-			</div>
-
-			<canvas id="hive-canvas" width="1000" height="750">
-			</canvas>
-
+			</div>			
+			<canvas id="hive-canvas" width="1000" height="750"></canvas>
 		</div>
 
 		<footer>
