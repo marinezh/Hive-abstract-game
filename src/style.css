@@ -31,7 +31,7 @@ body {
 	padding: 0;
 	background: #000000;
 	visibility: hidden;
-	overflow-y: scroll !important; /* Force scrollbar */
+
 }
 body.ready {
 	visibility: visible;
@@ -349,7 +349,7 @@ body {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: rgba(13, 3, 27, 0.85); 
+	background: #0d031b; 
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -364,7 +364,7 @@ body {
 /* Popup box (shared style for win + rules) */
 .popup,
 .popup-content {
-	background: rgba(50, 49, 61, 0.5);        
+	background: #1a0f2b;        
 	padding: 25px 35px;
 	border-radius: 16px;
 	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);

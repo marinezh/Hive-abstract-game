@@ -87,6 +87,8 @@ if (localStorage.getItem("playAgainstAI") === "true") {
   document.querySelector(".toggle")?.classList.add('active');
   // showError("🤖 Playing against AI");
   showError("🤖 AI on");
+} else {
+  showError("🤖 AI off");
 }
 let hoveredHex: { q: number, r: number } | null = null;
 

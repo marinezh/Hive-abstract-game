@@ -13,7 +13,39 @@
 		<title>Hive Game</title>
 		<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
 		<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+		<style>
+			html {
+				margin: 0;
+				padding: 0;
+				height: 100%;
+				background: #000000;
+				overflow-y: scroll;
+			}
+			body {
+				margin: 0;
+				padding: 0;
+				min-height: 100%;
+				background: #000000;  
+				visibility: hidden;
+			}
+			body.ready {
+				visibility: visible;
+			}
+			footer {
+				text-align: center;
+				color: #ffe066;
+				padding: 10px;
+				position: fixed;
+				bottom: 0;
+				width: 100%;
+				background: #000000;
+			}
+			footer a, footer a:link, footer a:visited {
+				text-decoration: none;
+			}
+		</style>
 	</head>
+
 	<body>
 		<div id="game-container" class="hidden">
 			<div class="center-container">
