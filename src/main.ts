@@ -26,11 +26,11 @@ import { AIController } from "./agent/aiController";
 //  CANVAS SETUP
 // ===============================
 const width = 1000;
-const height = 750;
+const height = 800;
 const HEX_SIZE = 25;
-const pieceSize = 30;
+const pieceSize = 45;  // Adjust this value to change bank piece size
 
-const { canvas, renderer, dpr } = setupCanvas(
+const { canvas, renderer } = setupCanvas(
   "hive-canvas",
   width,
   height,
@@ -38,11 +38,40 @@ const { canvas, renderer, dpr } = setupCanvas(
 );
 
 // ===============================
+// 📌 PRELOAD IMAGES
+// ===============================
+function preloadImages(): Promise<void> {
+  const types = ["bee", "spider", "beetle", "hopper", "ant"];
+  const colors = ["black", "white"];
+  const promises: Promise<void>[] = [];
+
+  types.forEach(type => {
+    colors.forEach(color => {
+      const img = new Image();
+      const base = import.meta.env.BASE_URL || '/';
+      img.src = `${base}assets/${type}_${color}.png`;
+      
+      const promise = new Promise<void>((resolve) => {
+        img.onload = () => resolve();
+        img.onerror = () => {
+          console.warn(`Failed to load: ${img.src}`);
+          resolve(); // Resolve anyway to not block
+        };
+      });
+      
+      promises.push(promise);
+    });
+  });
+
+  return Promise.all(promises).then(() => {});
+}
+
+// ===============================
 // 📌 GAME INITIALIZATION
 // ===============================
 
 const game = new Game();
-layoutBankPositions(game.bank, width, dpr, pieceSize);
+layoutBankPositions(game.bank, width, pieceSize);
 let selected:
 	| { from: "bank"; bankId: string; type: BankPiece["type"]; color: Player }
 	| { from: "board"; ref: Piece }
@@ -55,9 +84,11 @@ if (localStorage.getItem("playAgainstAI") === "true") {
   ai.enable();
   game.aiEnabled = true;
   game.aiPlays = "Black";
-
-  document.getElementById("play_against_ai")!.textContent = "AI: ON";
-  showError("🤖 Playing against AI");
+  document.querySelector(".toggle")?.classList.add('active');
+  // showError("🤖 Playing against AI");
+  showError("🤖 AI on");
+} else {
+  showError("🤖 AI off");
 }
 let hoveredHex: { q: number, r: number } | null = null;
 
@@ -102,7 +133,7 @@ if (game.aiEnabled) {
     game.currentPlayer = b.color;
     console.log(`First player: ${game.currentPlayer}`);
     document.getElementById('game-status')!.textContent =
-      `Game started — ${game.currentPlayer} moves first`;
+      `${game.currentPlayer} moves first`;
   }
 
   selected = { from: "bank", bankId: b.id, type: b.type, color: b.color };
@@ -181,7 +212,7 @@ function placeFromBank(hex: { q: number; r: number }) {
       const idx = game.bank.findIndex((p) => p.id === sel.bankId);
       if (idx !== -1) {
         game.bank.splice(idx, 1);
-        layoutBankPositions(game.bank, width, dpr, pieceSize);
+        layoutBankPositions(game.bank, width, pieceSize);
       }
       updateCameraIfNeeded(game.board, renderer);
       nextTurnOrSkip();
@@ -227,11 +258,23 @@ function nextTurnOrSkip() {
   game.validMoves = [];
 
   document.getElementById("game-status")!.textContent =
-    `Next move: ${game.currentPlayer}`;
+    `${game.currentPlayer}`;
+
+  // Re-render the board to show changes
+  renderCanvasBoard(
+    renderer,
+    game.board,
+    game.bank,
+    hoveredHex,
+    selected,
+    game.validMoves,
+    mousePos,
+    HEX_SIZE
+  );
 
   // Trigger AI AFTER UI updates
   if (ai.isEnabled && game.currentPlayer === game.aiPlays) {
-    setTimeout(() => ai.makeMoveIfNeeded(), 200);
+    setTimeout(() => ai.makeMoveIfNeeded(), 1000);
   }
   const winner = game.checkWin();
   if (winner) {
@@ -266,27 +309,35 @@ function handleHover(
 //   AI 
 // ===============================
 
+// ===============================
+//   AI TOGGLE
+// ===============================
+
 document.getElementById("play_against_ai")!
-  .addEventListener("click", () => {
+  .addEventListener("click", (e) => {
+    e.preventDefault(); // Prevent any default behavior
+    e.stopPropagation(); // Stop event bubbling
+    
+    const toggle = document.querySelector(".toggle");
 
-    // If AI already ON → turn it OFF without reload
+    // If AI already ON → turn it OFF and reload
     if (ai.isEnabled) {
-      ai.disable();
-      game.aiEnabled = false;
       localStorage.removeItem("playAgainstAI");
-
-      document.getElementById("play_against_ai")!.textContent = "AI: OFF";
-      showError("❌ AI Disabled");
+      toggle?.classList.remove('active');
+      
+      setTimeout(() => {
+        location.reload();
+      }, 350);
       return;
     }
 
-    // AI is being enabled → SAVE + RELOAD
+    // AI is being enabled → save and reload
     localStorage.setItem("playAgainstAI", "true");
-    showError("🤖 AI Enabled — restarting game…");
-
+    toggle?.classList.add('active');
+    
     setTimeout(() => {
       location.reload();
-    }, 300);
+    }, 350);
 });
 
 // ===============================
@@ -318,27 +369,52 @@ function updateCameraIfNeeded(board: Board, renderer: CanvasRenderer) {
 }
 
 // ===============================
-// INITIAL RENDER
+// 📌 INITIALIZE APP AFTER IMAGES LOAD
 // ===============================
-renderCanvasBoard(
-  renderer,
-  game.board,
-  game.bank,
-  hoveredHex,
-  selected,
-  game.validMoves,
-  mousePos,
-  HEX_SIZE
-);
+async function initializeApp() {
+  // Wait for all images to load
+  await preloadImages();
+  
+  // Now render the board with loaded images
+  renderCanvasBoard(
+    renderer,
+    game.board,
+    game.bank,
+    hoveredHex,
+    selected,
+    game.validMoves,
+    mousePos,
+    HEX_SIZE
+  );
 
-document.getElementById("game-container")?.classList.remove("hidden");
-document.body.classList.add("ready");
+  document.getElementById("game-container")?.classList.remove("hidden");
+  document.body.classList.add("ready");
+
+  // Attach UI events
+  initUIEvents(canvas, game.bank, renderer, {
+    onHexClick: handleHexClick,
+    onBankClick: handleBankClick,
+    onHoverHex: handleHover
+  });
+}
+
+// Start the app
+initializeApp();
 
 // ===============================
-// 📌 ATTACH UI EVENTS
+// 📌 OLD CODE - MOVED INTO initializeApp()
 // ===============================
-initUIEvents(canvas, game.bank, renderer, {
-  onHexClick: handleHexClick,
-  onBankClick: handleBankClick,
-  onHoverHex: handleHover
-});
+// renderCanvasBoard(
+//   renderer,
+//   game.board,
+//   game.bank,
+//   hoveredHex,
+//   selected,
+//   game.validMoves,
+//   mousePos,
+//   HEX_SIZE
+// );
+
+// document.getElementById("game-container")?.classList.remove("hidden");
+// document.body.classList.add("ready");
+

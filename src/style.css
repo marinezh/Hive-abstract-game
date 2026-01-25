@@ -20,6 +20,31 @@
 	font-family: "JLR Bizzy Beez", sans-serif;
 }
 
+html {
+	margin: 0;
+	padding: 0;
+	background: #000000;
+	overflow-y: scroll !important; /* Force scrollbar */
+}
+body {
+	margin: 0;
+	padding: 0;
+	background: #000000;
+	visibility: hidden;
+
+}
+body.ready {
+	visibility: visible;
+}
+footer {
+	text-align: center;
+	color: #ffe066;
+	padding: 10px;
+	width: 100%;
+	background: #000000;
+	margin-top: 20px;
+}
+
 h1 {
 	color: #ffe066;
 	font-size: 3rem;
@@ -149,7 +174,10 @@ body {
 
 #hive-canvas {
 	display: block;
-	margin: 0 auto; 
+	margin-bottom: 50px;
+	border-radius: 10px;
+	border:2px solid #ffe066; 
+	display:block; 
 	margin-bottom: 50px;
 }
 
@@ -158,16 +186,22 @@ body {
 	flex-direction: column;
 	justify-content: center;   
 	align-items: center;    
-	margin-top: 50px;
-	margin-bottom: 20px
 }
 
-#game-status {
-	color: #ffe066;
+/* #game-status {
+	font-family: 'Poppins', sans-serif;
+	color: #ff4d4d;
 	min-height: 1.5em; 
-	text-align: center;
 	font-size: 1.2em;
-	font-weight: 800;
+	font-weight: 700;
+} */
+
+#game-error,
+#game-status {
+	font-family: 'Poppins', sans-serif;
+	color: #ff4d4d;
+	min-height: 24px;
+	font-size: 16px;
 }
 
 /* Overlay covers the screen */
@@ -225,12 +259,6 @@ body {
 
 #close-popup:hover {
 	color: #ffffff;
-}
-
-button
-{
-	margin-left: 40px;
-	background-color: #ffe066;
 }
 
 .rules {
@@ -321,7 +349,7 @@ button
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: rgba(13, 3, 27, 0.85); 
+	background: #0d031b; 
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -336,7 +364,7 @@ button
 /* Popup box (shared style for win + rules) */
 .popup,
 .popup-content {
-	background: rgba(50, 49, 61, 0.5);        
+	background: #1a0f2b;        
 	padding: 25px 35px;
 	border-radius: 16px;
 	box-shadow: 0 6px 16px rgba(0, 0, 0, 0.6);
@@ -432,4 +460,74 @@ footer .author-link {
 
 footer .author-link:hover {
 	text-decoration: underline;
+}
+
+/* #play_against_ai{
+	border-radius: 10%;
+	background-color: #ffe066;
+} */
+
+
+.toggle {
+  display: inline-flex;
+  align-items: center;
+  width: 50px;
+  height: 25px;
+  background-color: #555;
+  border-radius: 20px;
+  padding: 3px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+  user-select: none; /* Prevent text selection on click */
+  -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+  outline: none; /* Remove focus outline */
+  border: none; /* Remove any border */
+  position: relative; /* Ensure stable positioning */
+}
+
+.toggle-btn {
+  width: 24px;
+  height: 24px;
+  background-color: rgb(8, 8, 8);
+  border-radius: 50%;
+  transition: transform 0.4s;
+}
+
+.toggle.active {
+  background-color: #ffe066;
+}
+
+.toggle.active .toggle-btn {
+  transform: translateX(25px);
+}
+
+.text {
+  display: none;
+}
+
+.info {
+	display: flex;
+	flex-direction: row;
+	justify-content: space-around;
+	gap: 150px;
+	margin-bottom:20px;
+	border-radius: 10px;
+	position: relative; /* Stable positioning */
+}
+
+.info-section {
+	display: flex;
+	flex-direction: column;
+	align-items: left;
+	width: 200px;
+	min-height: 60px; /* Prevent height changes */
+}
+.info > div:first-child {
+	width: 60px;
+}
+.info > div:nth-child(-n + 2){
+	width: 160px;
+}
+.title {
+	color:#ffe066;
 }

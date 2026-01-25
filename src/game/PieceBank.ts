@@ -47,14 +47,28 @@ export function drawPieceBanks(bankPieces: BankPiece[], ctx: CanvasRenderingCont
 export function layoutBankPositions(
   bankPieces: BankPiece[],
   canvasWidth: number,
-  dpr: number,
   pieceSize: number
 ) {
-  // --- Work entirely in canvas pixel units ---
-  const leftX = 20 * dpr;
-  const rightX = canvasWidth - pieceSize * dpr - 20 * dpr;
-  const startY = 60 * dpr;
-  const gapY = (pieceSize + 10) * dpr;
+  // --- Work in logical (CSS) pixels - context already handles DPR scaling ---
+  const leftX = 20;
+  const rightX = canvasWidth - pieceSize - 20;
+  const startY = 60;
+  const gapY = pieceSize + 10;
+
+  // ===== OLD CODE WITH DPR SCALING (caused double-scaling on Mac) =====
+  // This was multiplying everything by dpr, but the canvas context already
+  // has a transform applied with dpr scaling, so it was scaling twice!
+  // On Mac with dpr=2, pieces appeared 4x smaller than intended.
+  // 
+  // const leftX = 20 * dpr;
+  // const rightX = canvasWidth - pieceSize * dpr - 20 * dpr;
+  // const startY = 60 * dpr;
+  // const gapY = (pieceSize + 10) * dpr;
+  // 
+  // ...and then:
+  // p.width = pieceSize * dpr;
+  // p.height = pieceSize * dpr;
+  // ====================================================================
 
   let yBlack = startY;
   let yWhite = startY;
@@ -72,16 +86,16 @@ export function layoutBankPositions(
   blackPieces.forEach(p => {
     p.x = leftX;
     p.y = yBlack;
-    p.width = pieceSize * dpr;
-    p.height = pieceSize * dpr;
+    p.width = pieceSize;
+    p.height = pieceSize;
     yBlack += gapY;
   });
 
   whitePieces.forEach(p => {
     p.x = rightX;
     p.y = yWhite;
-    p.width = pieceSize * dpr;
-    p.height = pieceSize * dpr;
+    p.width = pieceSize;
+    p.height = pieceSize;
     yWhite += gapY;
   });
 }
